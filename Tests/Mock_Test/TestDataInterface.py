@@ -9,7 +9,7 @@ class test(unittest.TestCase):
     """FAKEEEE"""
     def testDataInterface(self):
         """Liiies"""
-        M =MockDataAggregator()
+        M = MockDataAggregator()
         self.assertEqual(M.getData(), 1, "SmthHappened?")
 
 
