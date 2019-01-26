@@ -10,31 +10,40 @@ class DataInterface(ABC):
     Абстрактный класс-интерфейс
     """
     @abstractmethod
-    def get_data(self, *pargs):
+    def getData(self, *pargs):
         """Абстрактный метод. Должен быть унаследован потомками. Возвращает обработанные данные"""
+        pass
 
     @abstractmethod
     def _process(self, *pargs):
         """Производит обработку данных по запросу"""
+        pass
 
-    @abstractmethod
-    def _get_raw_data(self):
+
+    def _getRawData(self):
         """Добывает необработанные данные."""
+        pass
 
 
 class MockDataAggregator(DataInterface):
     """Класс-наследник, агрегатор данных"""
-    def get_data(self, *pargs):
+    def getData(self, *pargs):
         """Функция-Наследник"""
-        data = self._process()
-        return data
+        Data = self._process()
+        if Data == 1:
+            return 1
+        else:
+            return 0
 
     def _process(self, *pargs):
         """См. интерфейс"""
-        data = self._get_raw_data()
-        return data
+        Data = self._getRawData()
+        if Data == 1:
+            return 1
+        else:
+            return 0
 
-    def _get_raw_data(self):
+    def _getRawData(self):
         """см. интерфейс"""
         return 1
 

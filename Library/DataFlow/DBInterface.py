@@ -12,6 +12,7 @@ class DBInterface(ABC):
     @abstractmethod
     def parse(self, *pargs):
         """Абстрактный метод. Должен быть унаследован потомками. Парсит БД и возвращает данные"""
+        pass
 
 class MockDataParser(DBInterface):
     """
@@ -20,6 +21,7 @@ class MockDataParser(DBInterface):
     def parse(self, *pargs):
         """Функция-Наследник"""
         return 1
-
+        
     def __init__(self):
         pass
+    
