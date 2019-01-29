@@ -1,7 +1,7 @@
 """
 The world's fake
 """
-from Library.GUI.I_Data import MockDataAggregator
+from Library.DataFlow.DBInterface import MockDataParser
 
 import unittest
 
@@ -9,9 +9,10 @@ class test(unittest.TestCase):
     """FAKEEEE"""
     def testDataInterface(self):
         """Liiies"""
-        m = MockDataAggregator()
-        self.assertEqual(m.get_data(), "SomeString Been in processing. Been in Aggregator.", "SmthHappened?")
+        m = MockDataParser()
+        self.assertEqual(m.parse(), "SomeString", "SmthHappened?")
 
 
 if __name__ == "__main__":
     unittest.main()
+

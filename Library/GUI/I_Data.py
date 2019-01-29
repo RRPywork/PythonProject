@@ -5,47 +5,40 @@ Author: Vitaly (Admin)
 from abc import ABC
 from abc import abstractmethod
 
+from Library.DataFlow.DBFactory import DataParserFactory
+
 class DataInterface(ABC):
     """
     Абстрактный класс-интерфейс
     """
     @abstractmethod
-    def getData(self, *pargs):
+    def get_data(self, *pargs):
         """Абстрактный метод. Должен быть унаследован потомками. Возвращает обработанные данные"""
-        pass
 
     @abstractmethod
     def _process(self, *pargs):
         """Производит обработку данных по запросу"""
-        pass
 
-
-    def _getRawData(self):
+    @abstractmethod
+    def _get_raw_data(self):
         """Добывает необработанные данные."""
-        pass
 
 
 class MockDataAggregator(DataInterface):
     """Класс-наследник, агрегатор данных"""
-    def getData(self, *pargs):
+    def get_data(self, *pargs):
         """Функция-Наследник"""
-        Data = self._process()
-        if Data == 1:
-            return 1
-        else:
-            return 0
+        data = self._process()
+        return data + " Been in Aggregator."
 
     def _process(self, *pargs):
         """См. интерфейс"""
-        Data = self._getRawData()
-        if Data == 1:
-            return 1
-        else:
-            return 0
+        Data = self._get_raw_data()
+        return Data + " Been in processing."
 
-    def _getRawData(self):
+    def _get_raw_data(self):
         """см. интерфейс"""
-        return 1
+        return self.its_parser.parse()
 
     def __init__(self):
-        pass
+        self.its_parser = DataParserFactory.create_mock_data_parser()
