@@ -5,6 +5,7 @@ Author: Daniil (Progger)
 from abc import ABC
 from abc import abstractmethod
 
+
 class DBInterface(ABC):
     """
     Абстрактный класс-интерфейс
@@ -12,6 +13,7 @@ class DBInterface(ABC):
     @abstractmethod
     def parse(self, *pargs):
         """Абстрактный метод. Должен быть унаследован потомками. Парсит БД и возвращает данные"""
+
 
 class MockDataParser(DBInterface):
     """

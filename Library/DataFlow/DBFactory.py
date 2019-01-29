@@ -5,6 +5,7 @@ Author: Vitaly (Admin)
 
 from Library.DataFlow.DBInterface import MockDataParser
 
+
 class DataParserFactory:
     """
     Фабрика

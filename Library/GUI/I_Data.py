@@ -7,6 +7,7 @@ from abc import abstractmethod
 
 from Library.DataFlow.DBFactory import DataParserFactory
 
+
 class DataInterface(ABC):
     """
     Абстрактный класс-интерфейс

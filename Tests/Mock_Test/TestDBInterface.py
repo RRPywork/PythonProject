@@ -5,9 +5,10 @@ from Library.DataFlow.DBInterface import MockDataParser
 
 import unittest
 
-class test(unittest.TestCase):
+
+class Test(unittest.TestCase):
     """FAKEEEE"""
-    def testDataInterface(self):
+    def test_data_interface(self):
         """Liiies"""
         m = MockDataParser()
         self.assertEqual(m.parse(), "SomeString", "SmthHappened?")

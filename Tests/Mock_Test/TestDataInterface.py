@@ -5,7 +5,8 @@ from Library.GUI.I_Data import MockDataAggregator
 
 import unittest
 
-class test(unittest.TestCase):
+
+class Test(unittest.TestCase):
     """FAKEEEE"""
     def testDataInterface(self):
         """Liiies"""
