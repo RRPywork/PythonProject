@@ -25,4 +25,3 @@ class MockDataParser(DBInterface):
         
     def __init__(self):
         pass
-    

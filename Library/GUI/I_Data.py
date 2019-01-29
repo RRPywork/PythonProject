@@ -34,8 +34,8 @@ class MockDataAggregator(DataInterface):
 
     def _process(self, *pargs):
         """См. интерфейс"""
-        Data = self._get_raw_data()
-        return Data + " Been in processing."
+        data = self._get_raw_data()
+        return data + " Been in processing."
 
     def _get_raw_data(self):
         """см. интерфейс"""
