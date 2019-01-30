@@ -2,6 +2,10 @@
 Попытка создать БД
 """
 
+from pandas import DataFrame
+from pandas import Series
+from pandas import read_csv
+
 
 class DataBase:
     """
@@ -9,39 +13,42 @@ class DataBase:
     """
     def __init__(self):
         """"""
-        self.DB = dict()
+        self.db = DataFrame()
 
-    def append_objects(self, objects):
+    def append_object(self, index, column_data, object_data):
         """"""
-        assert self.DB.get(objects[0]) is None
-        self.DB[objects[0]] = objects[1]
+        self.db = self.db.append(Series(object_data, index=column_data, name=index))
 
-    def append_attributes(self, attr_name, attr_values):
+    def append_attribute(self, attr_name, attr_values):
         """"""
-        for key in self.DB.keys():
-            self.DB[key][attr_name] = attr_values[key]
+        self.db[attr_name] = attr_values
 
     def delete_objects(self, object_keys):
         """"""
-        for i in object_keys:
-            assert self.DB.get(i) is not None
-            self.DB.pop(i)
+        self.db = self.db.drop(object_keys, axis=0)
 
     def delete_attribute(self, attr_name):
         """"""
-        for key in self.DB.keys():
-            self.DB.get(key).pop(attr_name)
+        self.db = self.db.drop([attr_name], axis=1)
 
     def get_objects(self, keys):
         """"""
-        k = {i: self.DB[i] for i in self.DB.keys() if i in keys}
+        k = self.db.loc[keys, :]
+        return k
+
+    def get_objects_exclusive(self, keys):
+        """"""
+        k = self.db.drop(keys, axis=0)
         return k
 
     def get_attributes(self, attr_names):
         """"""
-        k = dict()
-        for j in self.DB.keys():
-            k[j] = {i: self.DB.get(j).get(i) for i in attr_names}
+        k = self.db[attr_names]
+        return k
+
+    def get_attributes_exclusive(self, attr_names):
+        """"""
+        k = self.db.drop(attr_names, axis=1)
         return k
 
     def get_part(self, keys, attr_names):
@@ -50,8 +57,20 @@ class DataBase:
             return self.get_objects(keys)
         if keys is None:
             return self.get_attributes(attr_names)
-        k = {i: self.DB[i] for i in self.DB.keys() if i in keys}
-        a = dict()
-        for j in k.keys():
-            a[j] = {i: k.get(j).get(i) for i in attr_names}
+        k = self.db[attr_names].loc[keys,:]
+        return k
+
+    def get_part_exclusive(self, keys, attr_names):
+        k = self.db.drop(attr_names, axis=1)
+        a = k.drop(keys, axis=0)
         return a
+
+    def store(self, filename):
+        """"""
+        path = '..\\Data\\'
+        self.db.to_csv(path + filename + '.csv', index=True)
+
+    def read(self, filename):
+        """"""
+        path = '..\\Data\\'
+        self.db = read_csv(path + filename + '.csv', index_col=0)
