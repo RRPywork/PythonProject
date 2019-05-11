@@ -2,7 +2,7 @@
 import unittest
 
 from Library.DataBase import DataBase
-
+from Library.database_interaction.DatabaseParser import DatabaseParser
 
 class Test(unittest.TestCase):
     """"""
@@ -143,7 +143,7 @@ class Test(unittest.TestCase):
         db.append_object("NotEvergreen",["Name"],["Robert Katz"])
         db.append_attribute("Evergreenness", [1, 0])
         db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
-        print(db.get_value("Evergreen", "Evergreenness") + 3)
+        #print(db.get_value("Evergreen", "Evergreenness") + 3)
         assert True
 
     def test_change_value(self):
@@ -153,11 +153,85 @@ class Test(unittest.TestCase):
         db.append_object("NotEvergreen",["Name"],["Robert Katz"])
         db.append_attribute("Evergreenness", [1, 0])
         db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
-        print(db.get_db())
-        print(db.change_value("Evergreen", "Evergreenness", 3))
+        #print(db.get_db())
+        #print(db.change_value("Evergreen", "Evergreenness", 3))
+        #print(db.get_db())
+        assert True
+
+    def test_get_attr_names(self):
+        """"""
+        db = DataBase()
+        db.append_object("Evergreen",["Name"],["Mary Sue"])
+        db.append_object("NotEvergreen",["Name"],["Robert Katz"])
+        db.append_attribute("Evergreenness", [1, 0])
+        db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
+        #print(db.get_attr_names());
+        assert True
+
+    def test_append_attributes(self):
+        """"""
+        db = DataBase()
+        db.append_object("Evergreen",["Name"],["Mary Sue"])
+        db.append_object("NotEvergreen",["Name"],["Robert Katz"])
+        db.append_attribute("Evergreenness", [1, 0])
+        db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
+        db2 = DataBase()
+        db2.append_object("Evergreen",["Coolness", "Rank"],[10, 3])
+        db2.append_object("NotEvergreen",["Coolness", "Rank"],[1, 2])
+        db2.append_object("VeryEvergreen", ["Coolness", "Rank"], [10, 1])
+        db.append_attributes(["Coolness", "Rank"], db2)
         print(db.get_db())
         assert True
 
+    def test_join(self):
+        """"""
+        db = DataBase()
+        db.append_object("Evergreen",["Name"],["Mary Sue"])
+        db.append_object("NotEvergreen",["Name"],["Robert Katz"])
+        db.append_attribute("Evergreenness", [1, 0])
+        db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
+        db2 = DataBase()
+        db2.append_object("Evergreen",["Coolness", "Rank"],[10, 3])
+        db2.append_object("NotEvergreen",["Coolness", "Rank"],[1, 2])
+        db2.append_object("VeryEvergreen", ["Coolness", "Rank"], [10, 1])
+        db = db.join(db2, on=None, how="left")
+        print(db.get_db())
+        assert True
+
+    def test_parser(self):
+        """"""
+        db = DataBase()
+        db.append_object("Evergreen",["Name"],["Mary Sue"])
+        db.append_object("NotEvergreen",["Name"],["Robert Katz"])
+        db.append_attribute("Evergreenness", [1, 0])
+        db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
+        db2 = DataBase()
+        db2.append_object("Evergreen",["Coolness", "Rank"],[10, 3])
+        db2.append_object("NotEvergreen",["Coolness", "Rank"],[1, 2])
+        db2.append_object("VeryEvergreen", ["Coolness", "Rank"], [10, 1])
+        db.store("test_data")
+        db2.store("test_data_2")
+        dp = DatabaseParser(["test_1","test_2"],dict(zip(["test_1","test_2"],["test_data", "test_data_2"])))
+        dp.parse("DISPLAY",["-e",None],[None,None],None)
+        print(dp.working_db.get_db())
+        dp.parse("DISPLAY", ["-i","Evergreenness","Coolness"],["-e","VeryEvergreen"],None)
+        print(dp.working_db.get_db())
+        dp.parse("STORE", "test_total_1")
+        dp.parse("DROP", ["test_1"])
+        dp.parse("DISPLAY", ["-e",None],[None,None],None)
+        print(dp.working_db.get_db())
+        dp.parse("DISPLAY", ["-e",None],[None,None],None)
+        print(dp.working_db.get_db())
+        dp.parse("ADD", ["total_1"], ["test_total_1"])
+        dp.parse("DISPLAY", ["-e",None],[None,None],None)
+        print(dp.working_db.get_db())
+        dp.parse("DELETE", ["Coolness_caller"], ["Evergreen"])
+        print(dp.working_db.get_db())
+        dp.parse("APPEND",["Name"], ["EverNotGreen", "Everevergreeen"], [{"Name":"Katz","Rank":3, "Evergreenness":2,"Coolness_callee":3},{"Name":"Hui Yue","Rank":7, "Evergreenness":1,"Coolness_callee":5}],None)
+        print(dp.working_db.get_db())
+        dp.parse("CHANGE", "Name", "NotEvergreen", "Lin Yun")
+        print(dp.working_db.get_db())
+        assert True
 
 if __name__ == "__main__":
     unittest.main()
