@@ -13,25 +13,27 @@ class DatabaseParser(DBInterface):
     """
     Обработчик
     """
-    def __init__(self, names, paths):
+    def __init__(self, names, paths, hints=None):
         """
         Конструктор. Добывает БД из файлов csv (или sql, или ... Смотря что в методе)
         и помещает их в словарь отношение:БД
         """
         assert len(names) == len(paths)
         self.its_dbs = {i:DataBase() for i in names}
+        if hints is not None:
+            self.hints = {i:hints[i] for i in names}
         for i in names:
             self.its_dbs[i].read(paths[i])
         self.attr_names = {names[i]:self.its_dbs[names[i]].get_attr_names() for i in range(len(names))}
         self.working_db = DataBase()
 
     def inclusive_attr_display(self, attr_names):
-        self.working_db = DataBase()
-        for attr in attr_names:
-            for (name, attributes) in self.attr_names.items():
-                if attr in attributes:
-                    self.working_db=self.working_db.join(self.its_dbs[name].get_attributes(attr), on=None, how='inner')
-                    break
+        excl_attr_names = []
+        for attrs in self.attr_names.values():
+            for attr in attrs:
+                if attr not in attr_names:
+                    excl_attr_names.append(attr)
+        self.exclusive_attr_display(excl_attr_names)
 
     def inclusive_obj_display(self, obj_names):
         self.working_db = self.working_db.get_objects(obj_names)
@@ -39,7 +41,7 @@ class DatabaseParser(DBInterface):
     def exclusive_attr_display(self, attr_names):
         self.working_db = DataBase()
         for (name, db) in self.its_dbs.items():
-            a = self.working_db.join(db, on=None, how='inner')
+            a = self.working_db.join(db, on=self.hints[name] if self.hints[name]!='-' else None, how='inner')
             self.working_db = a
         if attr_names is not None:
             for attr in attr_names:
@@ -95,6 +97,9 @@ class DatabaseParser(DBInterface):
         elif q_type == 'ADD':
             names = pargs[0]
             path_names = pargs[1]
+            hints = pargs[2]
+            for (name, hint) in hints.items():
+                self.hints[name]=hint
             for i in range(len(names)):
                 db = DataBase()
                 db.read(path_names[i])
