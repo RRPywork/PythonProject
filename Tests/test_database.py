@@ -158,6 +158,18 @@ class Test(unittest.TestCase):
         #print(db.get_db())
         assert True
 
+    def test_rename(self):
+        """"""
+        db = DataBase()
+        db.append_object("Evergreen",["Name"],["Mary Sue"])
+        db.append_object("NotEvergreen",["Name"],["Robert Katz"])
+        db.append_attribute("Evergreenness", [1, 0])
+        db.append_object("VeryEvergreen", ["Name", "Evergreenness"], ["Uncle Bob",  10])
+        db.rename({"Evergreen":"NotSoEvergreen"}, axis="index")
+        db.rename({"Name":"NotSoLame"}, axis="columns")
+        print(db.get_db())
+        assert True
+
     def test_get_attr_names(self):
         """"""
         db = DataBase()
@@ -236,6 +248,10 @@ class Test(unittest.TestCase):
         dp.parse("APPEND",["Name"], ["EverNotGreen", "Everevergreeen"], [{"Name":"Katz","Rank":3, "Evergreenness":2,"Coolness_callee":3},{"Name":"Hui Yue","Rank":7, "Evergreenness":1,"Coolness_callee":5}],None)
         print(dp.working_db.get_db())
         dp.parse("CHANGE", "Name", "NotEvergreen", "Lin Yun")
+        print(dp.working_db.get_db())
+        dp.parse("RENAME", {"NotEvergreen":"NotSoEvergreen"}, "index")
+        print(dp.working_db.get_db())
+        dp.parse("RENAME", {"Name":"NotSoLame"}, "columns")
         print(dp.working_db.get_db())
         assert True
 

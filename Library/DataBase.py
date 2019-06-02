@@ -62,6 +62,10 @@ class DataBase:
         self.db[attr_name].loc[key] = new_value
         return temp
 
+    def rename(self, mapper, axis):
+        """"""
+        self.db = self.db.rename(mapper, axis=axis)
+
     def get_objects(self, keys):
         """"""
         k = self.db.loc[keys, :]

@@ -58,14 +58,15 @@ class DatabaseParser(DBInterface):
         Второй - условия
         Итого:
         query -> query_type args
-        query_type -> DISPLAY | ADD | DROP | APPEND | DELETE | STORE | CHANGE
+        query_type -> DISPLAY | ADD | DROP | APPEND | DELETE | STORE | CHANGE | RENAME
         args -> attr_list obj_list conditions |
-                names path_names |
+                names path_names hints|
                 names |
                 _names _names values name|
                 _names _names values|
                 pathname|
-                obj_name attr_name value
+                obj_name attr_name value|
+                dictionary, axis
         names, path_names, _names, name - строки (или списки строк!) (возможны пустые строки)
         attr_list -> key _names | NONE
         obj_list -> key _names | NONE
@@ -150,6 +151,10 @@ class DatabaseParser(DBInterface):
             obj_name = pargs[1]
             value = pargs[2]
             self.working_db.change_value(obj_name, attr_name, value)
+        elif q_type == 'RENAME':
+            mapper = pargs[0]
+            axis = pargs[1]
+            self.working_db.rename(mapper, axis)
         pass
 
 
