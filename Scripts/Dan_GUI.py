@@ -11,6 +11,18 @@ from tkinter import BooleanVar, BOTH
 from Library.DataBase import DataBase
 from Library.database_interaction.DatabaseParser import DatabaseParser
 
+class StringVar:
+    """"""
+    def __init__(self, val=""):
+        self.val=val
+
+    def set(self, j):
+        val = str(j)
+
+    def get(self, type):
+        return type(self.val)
+
+
 
 class Main(tk.Frame):
     def __init__(self, root, atributes):
@@ -292,7 +304,7 @@ class Edit_object(tk.Toplevel):
         self.init_child(atributes,self.view)
         
     def init_child(self, atributes,view):
-        self.title('Добавить новый объект')
+        self.title('Редактировать объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
                 
@@ -308,11 +320,11 @@ class Edit_object(tk.Toplevel):
         canvas.pack(side="left")
         canvas.create_window((0,10),window=self.frame,anchor='nw')
         self.frame.bind("<Configure>",lambda event: canvas.configure(scrollregion=canvas.bbox("all"),width=330,height=250))
-        
-        self.Variables = [StringVar() for i in range(len(dp.working_db.get_db().columns))]
+        old_attribute_values=[dp.working_db.get_value(view.tree.item(view.tree.selection()[0])['text'], attr) for attr in dp.working_db.get_db().columns]
+        self.Variables = [StringVar(old_attribute_values) for i in range(len(dp.working_db.get_db().columns))]
         self.Labels = [ttk.Label(self.frame, text=i+':') for i in dp.working_db.get_db().columns]
         self.Entries = [ttk.Entry(self.frame, textvariable=j) for i,j in zip(range(len(dp.working_db.get_db().columns)),self.Variables)]
-        
+        [i.insert(0,j) for i,j in zip(self.Entries, old_attribute_values)]
         [self.Variables[j].set(i) for i,j in zip(view.tree.item(view.tree.selection())['values'],range(len(self.Variables)))]        
         for i,j in zip([i for i in range(len(dp.working_db.get_db().columns))], self.Labels):
             j.grid(row=i,column=2, pady=3, padx=30, sticky='w')
