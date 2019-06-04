@@ -122,6 +122,13 @@ class DataBase:
 
     def read(self, filename):
         """"""
+        from pathlib import Path
         path = '..\\Data\\'
-        self.db = read_csv(path + filename + '.csv', index_col=0)
+        path += filename + '.csv'
+        file = Path(path)
+        if not file.is_file():
+            raise RuntimeError("Not a file")
+        self.db = read_csv(path, index_col=0)
+
+
         print(self.db)
