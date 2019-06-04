@@ -413,6 +413,7 @@ class Save_DB(tk.Toplevel):
 if __name__ == "__main__":
     root = tk.Tk()
     dp = DatabaseParser(["test_1","test_2","test_3"],dict(zip(["test_1","test_2","test_3"],["test_data", "test_data_2", "test_data_3"])), hints={"test_1":"-", "test_2":"-", "test_3":"Coolness"})
+    dp.parse("DISPLAY",["-e",None],[None,None],None)
     atributes = dp.working_db.get_db().columns
     app = Main(root, atributes)
     app.pack()
