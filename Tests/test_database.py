@@ -253,6 +253,8 @@ class Test(unittest.TestCase):
         print(dp.working_db.get_db())
         dp.parse("RENAME", {"Name":"NotSoLame"}, "columns")
         print(dp.working_db.get_db())
+        dp.parse("LOAD", "processors_v")
+        print(dp.working_db.get_db())
         assert True
 
 if __name__ == "__main__":
