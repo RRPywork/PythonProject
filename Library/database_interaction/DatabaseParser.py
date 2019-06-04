@@ -58,7 +58,7 @@ class DatabaseParser(DBInterface):
         Второй - условия
         Итого:
         query -> query_type args
-        query_type -> DISPLAY | ADD | DROP | APPEND | DELETE | STORE | CHANGE | RENAME
+        query_type -> DISPLAY | ADD | DROP | APPEND | DELETE | STORE | CHANGE | RENAME | LOAD
         args -> attr_list obj_list conditions |
                 names path_names hints|
                 names |
@@ -66,7 +66,8 @@ class DatabaseParser(DBInterface):
                 _names _names values|
                 pathname|
                 obj_name attr_name value|
-                dictionary, axis
+                dictionary, axis|
+                name
         names, path_names, _names, name - строки (или списки строк!) (возможны пустые строки)
         attr_list -> key _names | NONE
         obj_list -> key _names | NONE
@@ -155,6 +156,8 @@ class DatabaseParser(DBInterface):
             mapper = pargs[0]
             axis = pargs[1]
             self.working_db.rename(mapper, axis)
+        elif q_type == 'LOAD':
+            self.working_db.read(pargs[0])
         pass
 
 
