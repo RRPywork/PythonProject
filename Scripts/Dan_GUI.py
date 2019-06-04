@@ -4,25 +4,14 @@ Created on Wed Apr  3 23:37:20 2019
 
 @author: kolesov
 """
+from tkinter import messagebox as mb
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Canvas
-from tkinter import BooleanVar, BOTH
+from tkinter import BooleanVar
+from tkinter import StringVar
 from Library.DataBase import DataBase
 from Library.database_interaction.DatabaseParser import DatabaseParser
-
-class StringVar:
-    """"""
-    def __init__(self, val=""):
-        self.val=val
-
-    def set(self, j):
-        val = str(j)
-
-    def get(self, type):
-        return type(self.val)
-
-
 
 class Main(tk.Frame):
     def __init__(self, root, atributes):
@@ -49,12 +38,18 @@ class Main(tk.Frame):
         editmenu.add_command(label='Редактировать объект', command=self.open_edit_object)
         editmenu.add_command(label='Редактировать атрибут', command=self.open_edit_atribute)
         
+        showmenu = tk.Menu(mainmenu, tearoff=0)
+        showmenu.add_command(label='Новая сессия', command=self.open_show_DB)
+        showmenu.add_command(label='Загрузить сессию', command=self.open_download_session)
+        
         mainmenu.add_cascade(label="Добавить", menu=addmenu)
         mainmenu.add_cascade(label="Удалить", menu=deletemenu)
         mainmenu.add_cascade(label="Редактировать", menu=editmenu)
+        mainmenu.add_cascade(label="Отобразить", menu=showmenu)
         
-        mainmenu.add_command(label='Отобразить', command=self.open_show_DB)
         mainmenu.add_command(label='Сохранить', command=self.open_save_DB)
+        mainmenu.add_command(label='Справка', command=self.open_info)
+        mainmenu.add_command(label='×', command=self.destroy_links)
         
         
         self.scrollbar1 = tk.Scrollbar(self, orient=tk.HORIZONTAL)
@@ -79,6 +74,17 @@ class Main(tk.Frame):
         self.scrollbar2.config(command=self.tree.yview)
         
         self.update_DB()
+        
+    def download_session(self, entry):
+        print('11111')
+        print(entry.get()+'!')
+        dp.parse("LOAD",entry.get())
+        self.update_DB()
+    
+    def destroy_links(self):
+        self.tree.focus_set()
+        self.update_DB()
+        
 
     def update_DB(self):
         self.tree.config(columns=[i for i in dp.working_db.get_db().columns])
@@ -98,7 +104,7 @@ class Main(tk.Frame):
     
     def delete_object(self):
         if self.tree.selection()== ():
-            print('choose object!')
+            mb.showerror('Ошибка','Должен быть выбран объект')
         else:
             dp.parse("DELETE",[],[self.tree.item(self.tree.selection()[0])['text']])
             self.update_DB()
@@ -111,6 +117,7 @@ class Main(tk.Frame):
     def edit_object(self, Entries):
         for i,j in zip(dp.working_db.get_db().columns,Entries):
             dp.parse("CHANGE", i, self.tree.item(self.tree.selection()[0])['text'],str(j.get()))
+        self.tree.focus_set()
         self.update_DB()
     
     def edit_atribute(self,combobox,entry):
@@ -123,6 +130,12 @@ class Main(tk.Frame):
     
     def save_DB(self, entry):
         dp.parse("STORE", entry.get())
+        
+    def open_download_session(self):
+        Download_session()
+        
+    def open_info(self):
+        pass
 
     def open_add_object(self):
         Add_object(atributes)
@@ -135,7 +148,7 @@ class Main(tk.Frame):
         
     def open_edit_object(self):
         if self.tree.selection()==():
-            print('choose object!')
+            mb.showerror('Ошибка','Должен быть выбран объект')
         else:
             Edit_object()
         
@@ -147,7 +160,40 @@ class Main(tk.Frame):
         
     def open_save_DB(self):
         Save_DB()
+        
+        
+class Download_session(tk.Toplevel):
+    def __init__(self):
+        super().__init__(root)
+        self.init_child()
+        self.view = app
+        
+    def init_child(self):
+        self.title('Загрузка сессии')
+        self.geometry('300x150+400+300')
+        self.resizable(False, False)
+        
+        self.label_name1 = tk.Label(self, text='Введите название существующей базы даных:')
+        self.label_name1.pack(side='top', pady=7)
+        
+        self.label_name2 = tk.Label(self, text='(без расширения)')
+        self.label_name2.pack(side='top')
+        
+        self.entry = ttk.Entry(self, width=30)
+        self.entry.pack(side='top', pady=7)
+        
+        
+        self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
+        self.btn_cancel.place(x=210, y=110)
 
+        self.btn_ok = ttk.Button(self, text='Загрузить', command=self.destroy)
+        self.btn_ok.place(x=130, y=110)
+        
+        self.btn_ok.bind('<Button-1>', lambda event: self.view.download_session(self.entry))
+        
+        self.grab_set()
+        self.focus_set() 
+    
 class Delete_atribute(tk.Toplevel):
     def __init__(self):
         super().__init__(root)
@@ -320,11 +366,11 @@ class Edit_object(tk.Toplevel):
         canvas.pack(side="left")
         canvas.create_window((0,10),window=self.frame,anchor='nw')
         self.frame.bind("<Configure>",lambda event: canvas.configure(scrollregion=canvas.bbox("all"),width=330,height=250))
-        old_attribute_values=[dp.working_db.get_value(view.tree.item(view.tree.selection()[0])['text'], attr) for attr in dp.working_db.get_db().columns]
-        self.Variables = [StringVar(old_attribute_values) for i in range(len(dp.working_db.get_db().columns))]
+        
+        self.Variables = [StringVar() for i in range(len(dp.working_db.get_db().columns))]
         self.Labels = [ttk.Label(self.frame, text=i+':') for i in dp.working_db.get_db().columns]
         self.Entries = [ttk.Entry(self.frame, textvariable=j) for i,j in zip(range(len(dp.working_db.get_db().columns)),self.Variables)]
-        [i.insert(0,j) for i,j in zip(self.Entries, old_attribute_values)]
+        
         [self.Variables[j].set(i) for i,j in zip(view.tree.item(view.tree.selection())['values'],range(len(self.Variables)))]        
         for i,j in zip([i for i in range(len(dp.working_db.get_db().columns))], self.Labels):
             j.grid(row=i,column=2, pady=3, padx=30, sticky='w')
@@ -332,13 +378,14 @@ class Edit_object(tk.Toplevel):
         for i,j in zip([i for i in range(len(dp.working_db.get_db().columns))], self.Entries):
             j.grid(row=i,column=3, pady=3, padx=30)
                           
-        btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
-        btn_cancel.place(x=240, y=265)
+        self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
+        self.btn_cancel.place(x=240, y=265)
 
         self.btn_ok = ttk.Button(self, text='Сохранить', command=self.destroy)
         self.btn_ok.place(x=160, y=265)
         
         self.btn_ok.bind('<Button-1>', lambda event: self.view.edit_object(self.Entries))
+        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
         
         self.grab_set()
         self.focus_set()
