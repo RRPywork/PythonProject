@@ -12,7 +12,7 @@ from tkinter import BooleanVar
 from tkinter import StringVar
 from Library.DataBase import DataBase
 from Library.database_interaction.DatabaseParser import DatabaseParser
-
+from Library.configuration_parser import *
 class Main(tk.Frame):
     def __init__(self, root, atributes):
         super().__init__(root)
@@ -471,7 +471,11 @@ class Save_DB(tk.Toplevel):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    dp = DatabaseParser(["test_1","test_2","test_3"],dict(zip(["test_1","test_2","test_3"],["test_data", "test_data_2", "test_data_3"])), hints={"test_1":"-", "test_2":"-", "test_3":"Coolness"})
+    cp = ConfigurationParser("config.ini")
+    config = cp.parse()
+    main_dbs = config["paths"]
+
+    dp = DatabaseParser(list(main_dbs.items.keys()),main_dbs.items, hints=config["hints"].items)
     dp.parse("DISPLAY",["-e",None],[None,None],None)
     atributes = dp.working_db.get_db().columns
     app = Main(root, atributes)

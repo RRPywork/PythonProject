@@ -11,7 +11,6 @@ class Block:
 
 
 
-
 class ConfigurationParser:
     """"""
     def __init__(self, path):
