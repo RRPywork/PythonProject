@@ -483,12 +483,26 @@ class Reports(tk.Toplevel):
         super().__init__(root)
         self.view = app
         self.dataframe = self.view.dp.working_db.get_db()
-        self.init_child(self.view)
-        print(self.isQuality("L3"))
+        self.attributes = list(self.dataframe.columns)
+        self.v_attrs = [str(attr) for attr in self.attributes if self.isValAttr(str(attr))]
+        self.q_attrs = [str(attr) for attr in self.attributes if not attr in self.v_attrs]
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax= self.figure.add_subplot(111)
 
-    def isQuality(self, attr):
+        self.init_child(self.view)
+
+
+    def isValAttr(self, attr):
         val = str(self.dataframe[attr].iloc[0])
-        return val.isnumeric()
+        dots=0
+        for ch in val:
+            if not(str.isdigit(ch) or (ch == '.')):
+                return False
+            if ch=='.':
+                dots+=1
+            if(dots>1):
+                return False
+        return True
 
     def init_child(self, view):
         self.title('Проект по питону')
@@ -526,6 +540,12 @@ class Reports(tk.Toplevel):
         self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
         self.grab_set()
         self.focus_set()
+
+    def paint_figure(self):
+
+        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
 
     def click(self):
         if self.combo.get()=="Диаграмма рассеивания(2 кол - кач)":
@@ -627,59 +647,43 @@ class Reports(tk.Toplevel):
             elem3.place_forget()
 
     def Buildbar(self):
-        self.figure=plt.Figure(figsize=(5,4),dpi=75)
-        self.ax= self.figure.add_subplot(111)
-
         data = (20, 35, 37 ,39 ,40)
-
         ind = np.arange(5)
         width= .5
+        self.ax.clear()
         rects = self.ax.bar(ind, data, width)
 
-        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+        self.paint_figure()
 
     def Buildhist(self):
-        self.figure=plt.Figure(figsize=(5,4),dpi=75)
-        self.ax= self.figure.add_subplot(111)
 
         data = (20, 35, 37 ,39 ,40)
 
         ind = np.arange(5)
         width= .5
+        self.ax.clear()
         rects = self.ax.bar(ind, data, width)
 
-        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+        self.paint_figure()
 
     def Buildbox(self):
-        self.figure=plt.Figure(figsize=(5,4),dpi=75)
-        self.ax= self.figure.add_subplot(111)
         data = (20, 0, 37 ,39 ,40)
 
         ind = np.arange(5)
         width= .5
+        self.ax.clear()
         rects = self.ax.boxplot((20, 35, 37 ,39 ,40),(20, 35, 37 ,39 ,40))
-
-        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+        self.paint_figure()
 
     def Buildscatter(self):
-        self.figure=plt.Figure(figsize=(5,4),dpi=75)
-        self.ax = self.figure.add_subplot(111)
 
         data = (20, 35, 37 ,39 ,40)
 
         ind = np.arange(5)
         width= .5
+        self.ax.clear()
         rects = self.ax.bar(ind, data, width)
-
-        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
-        canvas.draw()
-        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+        self.paint_figure()
 
     def save_report(self):
         pass
