@@ -10,9 +10,13 @@ from tkinter import ttk
 from tkinter import Canvas
 from tkinter import BooleanVar
 from tkinter import StringVar
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Library.DataBase import DataBase
 from Library.database_interaction.DatabaseParser import DatabaseParser
 from Library.configuration_parser import *
+
 class Main(tk.Frame):
     def __init__(self, root, atributes):
         super().__init__(root)
@@ -50,8 +54,9 @@ class Main(tk.Frame):
         mainmenu.add_command(label='Сохранить', command=self.open_save_DB)
         mainmenu.add_command(label='Справка', command=self.open_info)
         mainmenu.add_command(label='×', command=self.destroy_links)
-        
-        
+        mainmenu.add_command(label='Отчеты', command=self.open_reports)
+
+
         self.scrollbar1 = tk.Scrollbar(self, orient=tk.HORIZONTAL)
         self.scrollbar1.pack(side='bottom', fill='x')
         
@@ -74,10 +79,13 @@ class Main(tk.Frame):
         self.scrollbar2.config(command=self.tree.yview)
         
         self.update_DB()
-        
+
+    def open_reports(self):
+        Reports()
+
     def download_session(self, entry):
-        print('11111')
-        print(entry.get()+'!')
+        #print('11111')
+        #print(entry.get()+'!')
         dp.parse("LOAD",entry.get())
         self.update_DB()
     
@@ -226,7 +234,7 @@ class Delete_atribute(tk.Toplevel):
         self.focus_set()
     
 class Add_object(tk.Toplevel):
-    def __init__(self, atributes):
+    def __init__(self, parent):
         super().__init__(root)
         self.init_child(atributes)
         self.view = app
@@ -468,6 +476,213 @@ class Save_DB(tk.Toplevel):
         
         self.grab_set()
         self.focus_set() 
+
+
+class Reports(tk.Toplevel):
+    def __init__(self):
+        super().__init__(root)
+        self.view = app
+        self.dataframe = self.view.dp.working_db.get_db()
+        self.init_child(self.view)
+        print(self.isQuality("L3"))
+
+    def isQuality(self, attr):
+        val = str(self.dataframe[attr].iloc[0])
+        return val.isnumeric()
+
+    def init_child(self, view):
+        self.title('Проект по питону')
+        self.geometry('1000x550')
+        self.resizable(False, False)
+        self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
+        self.plot_area_frame.place(x=500,y=10,height=500,width=450)
+
+        self.settings_area_frame = tk.LabelFrame(self,text='Settings Area')
+        self.settings_area_frame.place(x=100,y=10,height=500,width=350)
+
+        self.menu = tk.Menu(self)
+        new_item = tk.Menu(self.menu, tearoff=0)
+        new_item.add_command(label='Новый')
+        new_item.add_separator()
+        new_item.add_command(label='Изменить')
+        self.menu.add_cascade(label='Файл', menu=new_item)
+
+        self.btn_save = ttk.Button(self, text='Сохранить', command=self.save_report)
+        self.btn_save.place(x=100, y=100)
+
+        value = StringVar()
+        self.combo = ttk.Combobox(self.settings_area_frame, textvariable=value)
+        lbl = tk.Label(self.settings_area_frame ,text='Выберите вид отчета:')
+        lbl.place(x=10,y=7,height=20,width=150)
+        self.combo['values'] = ("Столбчатая диаграмма(кач-кач)","Гистограмма(кол-кач)", "Диаграмма Бокса-Вискера(кол-кач)","Диаграмма рассеивания(2 кол - кач)", "Сводная таблица (кач-кач)", "Набор осн. опис. стат")
+        self.combo.current(0)
+        self.combo.place(x=10,y=30, height=20, width=200)
+
+        self.choose_btn = ttk.Button(self.settings_area_frame, text='Выбрать',command=self.click)
+        self.choose_btn.place(x=230, y=30, height=20, width=70)
+
+        self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
+        self.btn_cancel.place(x=240, y=265)
+        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
+        self.grab_set()
+        self.focus_set()
+
+    def click(self):
+        if self.combo.get()=="Диаграмма рассеивания(2 кол - кач)":
+            elem1 = ttk.Combobox(self.settings_area_frame)
+            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
+            lbl1.place(x=10, y=50, height=20, width=200)
+            elem1['values']=("Частота","Цена","TDP","Объём кэша L3")
+            elem1.current(0)
+            elem1.place(x=10,y=73, height=20, width=200)
+            lbl2 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
+            lbl2.place(x=10, y=93, height=20, width=200)
+            elem2 = ttk.Combobox(self.settings_area_frame)
+            elem2['values']=("Частота","Цена","TDP","Объём кэша L3")
+            elem2.current(0)
+            elem2.place(x=10,y=116, height=20,width=200)
+            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildscatter)
+            btn2.place(x=230, y=73, height=20, width=70)
+            elem3 = ttk.Combobox(self.settings_area_frame)
+            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl3.place(x=10, y=136, height=20, width=200)
+            elem3['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem3.current(0)
+            elem3.place(x=10,y=159, height=20,width=200)
+        if self.combo.get()=="Столбчатая диаграмма(кач-кач)":
+            elem3 = ttk.Combobox(self.settings_area_frame)
+            elem1 = ttk.Combobox(self.settings_area_frame)
+            lbl1 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl1.place(x=10, y=50, height=20, width=200)
+            elem1['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem1.current(0)
+            elem1.place(x=10,y=73, height=20, width=200)
+            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl2.place(x=10, y=93, height=20, width=200)
+            elem2 = ttk.Combobox(self.settings_area_frame)
+            elem2['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem2.current(0)
+            elem2.place(x=10,y=116, height=20,width=200)
+            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildbar)
+            btn2.place(x=230, y=73, height=20, width=70)
+            elem3 = ttk.Combobox(self.settings_area_frame)
+            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl3.place(x=10, y=136, height=20, width=200)
+            elem3['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem3.current(0)
+            elem3.place(x=10,y=159, height=20,width=200)
+            lbl3.destroy()
+            elem3.destroy()
+        if self.combo.get()=="Гистограмма(кол-кач)":
+            elem1 = ttk.Combobox(self.settings_area_frame)
+            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
+            lbl1.place(x=10, y=50, height=20, width=200)
+            elem1['values']=("Частота","Цена","TDP","Объём кэша L3")
+            elem1.current(0)
+            elem1.place(x=10,y=73, height=20, width=200)
+            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl2.place(x=10, y=93, height=20, width=200)
+            elem2 = ttk.Combobox(self.settings_area_frame)
+            elem2['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem2.current(0)
+            elem2.place(x=10,y=116, height=20,width=200)
+            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildhist)
+            btn2.bind('<Button-1>')
+            btn2.place(x=230, y=73, height=20, width=70)
+            elem3 = ttk.Combobox(self.settings_area_frame)
+            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl3.place(x=10, y=136, height=20, width=200)
+            elem3['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem3.current(0)
+            elem3.place(x=10,y=159, height=20,width=200)
+            lbl3.place_forget()
+            elem3.place_forget()
+            n1=elem1.get()
+            n2=elem2.get()
+            #print(n1,n2)
+        if self.combo.get()=="Диаграмма Бокса-Вискера(кол-кач)":
+            elem1 = ttk.Combobox(self.settings_area_frame)
+            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
+            lbl1.place(x=10, y=50, height=20, width=200)
+            elem1['values']=("Частота","Цена","TDP","Объём кэша L3")
+            elem1.current(0)
+            elem1.place(x=10,y=73, height=20, width=200)
+            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl2.place(x=10, y=93, height=20, width=200)
+            elem2 = ttk.Combobox(self.settings_area_frame)
+            elem2['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem2.current(0)
+            elem2.place(x=10,y=116, height=20,width=200)
+            n=elem1.get()
+            k=elem2.get()
+            btn2 = tk.Button(self.settings_area_frame, text='Построить',command=self.Buildbox)
+            btn2.place(x=230, y=73, height=20, width=70)
+            elem3 = ttk.Combobox(self.settings_area_frame)
+            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl3.place(x=10, y=136, height=20, width=200)
+            elem3['values']=("Модель","Линейка","Socket","Ядро","Изготовитель","Техпроцесс")
+            elem3.current(0)
+            elem3.place(x=10,y=159, height=20,width=200)
+            lbl3.place_forget()
+            elem3.place_forget()
+
+    def Buildbar(self):
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax= self.figure.add_subplot(111)
+
+        data = (20, 35, 37 ,39 ,40)
+
+        ind = np.arange(5)
+        width= .5
+        rects = self.ax.bar(ind, data, width)
+
+        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+
+    def Buildhist(self):
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax= self.figure.add_subplot(111)
+
+        data = (20, 35, 37 ,39 ,40)
+
+        ind = np.arange(5)
+        width= .5
+        rects = self.ax.bar(ind, data, width)
+
+        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+
+    def Buildbox(self):
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax= self.figure.add_subplot(111)
+        data = (20, 0, 37 ,39 ,40)
+
+        ind = np.arange(5)
+        width= .5
+        rects = self.ax.boxplot((20, 35, 37 ,39 ,40),(20, 35, 37 ,39 ,40))
+
+        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+
+    def Buildscatter(self):
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax = self.figure.add_subplot(111)
+
+        data = (20, 35, 37 ,39 ,40)
+
+        ind = np.arange(5)
+        width= .5
+        rects = self.ax.bar(ind, data, width)
+
+        canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+
+    def save_report(self):
+        pass
 
 if __name__ == "__main__":
     root = tk.Tk()

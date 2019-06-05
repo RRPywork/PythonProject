@@ -131,4 +131,4 @@ class DataBase:
         self.db = read_csv(path, index_col=0)
 
 
-        print(self.db)
+        #print(self.db)
