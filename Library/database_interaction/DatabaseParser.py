@@ -41,11 +41,13 @@ class DatabaseParser(DBInterface):
     def exclusive_attr_display(self, attr_names):
         self.working_db = DataBase()
         for (name, db) in self.its_dbs.items():
-            a = self.working_db.join(db, on=self.hints[name] if self.hints[name]!='-' else None, how='inner')
+            a = self.working_db.join(db, on=self.hints[name] if self.hints[name]!='-' else None, how='left')
             self.working_db = a
         if attr_names is not None:
             for attr in attr_names:
                 self.working_db.delete_attribute(attr)
+        self.working_db = DataBase(self.working_db.get_db().drop_duplicates())
+        self.working_db = DataBase(self.working_db.get_db().groupby(self.working_db.get_db().index).first())
 
     def exclusive_obj_display(self, obj_names):
         self.working_db.delete_objects(obj_names)
