@@ -38,7 +38,9 @@ class Main(tk.Frame):
         deletemenu.add_command(label='Удалить объект', command=self.delete_object)
         deletemenu.add_command(label='Удалить атрибут', command=self.open_delete_dialog)
         
-        editmenu = tk.Menu(mainmenu, tearoff=0)
+        edit = tk.Menu(mainmenu, tearoff=0)
+        
+        editmenu = tk.Menu(edit, tearoff=0)
         editmenu.add_command(label='Редактировать объект', command=self.open_edit_object)
         editmenu.add_command(label='Редактировать атрибут', command=self.open_edit_atribute)
         
@@ -46,15 +48,16 @@ class Main(tk.Frame):
         showmenu.add_command(label='Новая сессия', command=self.open_show_DB)
         showmenu.add_command(label='Загрузить сессию', command=self.open_download_session)
         
-        mainmenu.add_cascade(label="Добавить", menu=addmenu)
-        mainmenu.add_cascade(label="Удалить", menu=deletemenu)
-        mainmenu.add_cascade(label="Редактировать", menu=editmenu)
-        mainmenu.add_cascade(label="Отобразить", menu=showmenu)
+        edit.add_cascade(label="Добавить", menu=addmenu)
+        edit.add_cascade(label="Удалить", menu=deletemenu)
+        edit.add_cascade(label="Редактировать", menu=editmenu)
+        mainmenu.add_cascade(label="Действие", menu=edit)
+        mainmenu.add_cascade(label="База данных", menu=showmenu)
         
         mainmenu.add_command(label='Сохранить', command=self.open_save_DB)
         mainmenu.add_command(label='Справка', command=self.open_info)
-        mainmenu.add_command(label='×', command=self.destroy_links)
         mainmenu.add_command(label='Отчеты', command=self.open_reports)
+        mainmenu.add_command(label='×', command=self.destroy_links)
 
 
         self.scrollbar1 = tk.Scrollbar(self, orient=tk.HORIZONTAL)
@@ -112,9 +115,10 @@ class Main(tk.Frame):
     
     def delete_object(self):
         if self.tree.selection()== ():
-            mb.showerror('Ошибка','Должен быть выбран объект')
+            mb.showerror('Ошибка','Должны быть выбраны объекты')
         else:
-            dp.parse("DELETE",[],[self.tree.item(self.tree.selection()[0])['text']])
+            for i in self.tree.selection():   
+                dp.parse("DELETE",[],[self.tree.item(i)['text']])
             self.update_DB()
     
     def delete_atribute(self, Entries):
@@ -127,6 +131,13 @@ class Main(tk.Frame):
             dp.parse("CHANGE", i, self.tree.item(self.tree.selection()[0])['text'],str(j.get()))
         self.tree.focus_set()
         self.update_DB()
+        
+    def select_all(self, Variables):
+        for i in Variables:
+            if i.get()==False:
+                [j.set(True) for j in Variables]
+            else:
+                [j.set(False) for j in Variables]
     
     def edit_atribute(self,combobox,entry):
         dp.parse("RENAME", {combobox.get():entry.get()}, "columns")
@@ -320,10 +331,10 @@ class Add_atribute(tk.Toplevel):
 class Edit_atribute(tk.Toplevel):
     def __init__(self):
         super().__init__(root)
-        self.init_child(atributes)
+        self.init_child()
         self.view = app
         
-    def init_child(self, atributes):
+    def init_child(self):
         self.title('Редактировать атрибут')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -355,9 +366,9 @@ class Edit_object(tk.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.view = app
-        self.init_child(atributes,self.view)
+        self.init_child(self.view)
         
-    def init_child(self, atributes,view):
+    def init_child(self,view):
         self.title('Редактировать объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
@@ -428,8 +439,14 @@ class Show_DB(tk.Toplevel):
         self.Variables = [BooleanVar() for i in range(len(atributes))]
         self.Checkbuttons = [tk.Checkbutton(self.frame, text=i, variable=j) for i,j in zip(atributes,self.Variables)]
         
+        self.checkbutton_stringvar = BooleanVar()
+        self.checkbutton = tk.Checkbutton(self.frame, text='Выбрать все', variable=self.checkbutton_stringvar)
+        self.checkbutton.grid(row=1,column=2, pady=3, padx=20, sticky='w')
+        
         for i,j in zip([i for i in range(len(self.Checkbuttons))], self.Checkbuttons):
-            j.grid(row=i,column=2, pady=3, padx=20, sticky='w')
+            j.grid(row=i+1,column=2, pady=3, padx=20, sticky='w')
+            
+        self.checkbutton.bind('<Button-1>', lambda event: self.view.select_all(self.Variables))
                          
         
         btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
