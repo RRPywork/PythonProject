@@ -3,7 +3,12 @@
 Created on Wed Apr  3 23:37:20 2019
 
 @author: kolesov
+@author: baleskin
 """
+import sys
+sys.path.insert(0, '..\\')
+sys.path.insert(1, '..\\Library\\')
+
 from tkinter import messagebox as mb
 import tkinter as tk
 from tkinter import ttk
@@ -13,9 +18,9 @@ from tkinter import StringVar
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Library.DataBase import DataBase
-from Library.database_interaction.DatabaseParser import DatabaseParser
-from Library.configuration_parser import *
+from Work.Library.DataBase import DataBase
+from Work.Library.database_interaction.DatabaseParser import DatabaseParser
+from Work.Library.configuration_parser import *
 
 class Main(tk.Frame):
     def __init__(self, root, atributes):
@@ -752,19 +757,49 @@ class Reports(tk.Toplevel):
         print(self.pivot)
         self.plottype = "TEXT"
         self.text_type="PIVOT"
+        self.scrollbar1 = tk.Scrollbar(self.plot_area_frame, orient=tk.HORIZONTAL)
+        self.scrollbar1.pack(side='bottom', fill='x')
+
+        self.scrollbar2 = tk.Scrollbar(self.plot_area_frame, orient=tk.VERTICAL)
+        self.scrollbar2.pack(side='right', fill='y')
+        self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.pivot.keys()], height=15,
+                                 xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
+        self.tree.pack(side='right')
+
+        for i in self.pivot.keys():
+             self.tree.column(i, anchor=tk.CENTER)
+
+        for i in self.pivot.keys():
+            self.tree.heading(i, text=i)
+
+        self.scrollbar1.config(command=self.tree.xview)
+        self.scrollbar2.config(command=self.tree.yview)
+        self.tree.config(columns=[i for i in self.pivot.columns])
+        for i in self.pivot.columns:
+             self.tree.column(i, anchor=tk.CENTER)
+             self.tree.heading(i, text=i)
+        [self.tree.delete(i) for i in self.tree.get_children()]
+        [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.pivot.index.tolist(), self.pivot.values.tolist())]
+
 
     def MajorDescStats(self):
-
+        pass
 
     def save_report(self):
         #Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
         #Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
         #Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
+        name = "graph1.png"#change to choice result
         if self.plottype=="GRAPH":
-            self.figure.savefig("graph.png")
+            f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name, 'w')
+            f.close()
+            self.figure.savefig(fname=os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name)
         elif self.plottype=="TEXT":
             if self.text_type == "PIVOT":
-                self.pivot.to_excel("..\\Output\\pivot_table.xlsx", sheet_name="pivot_table")
+                name = "text1.xlsx"
+                f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, 'w')
+                f.close()
+                self.pivot.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, sheet_name="pivot_table")
 
 
 if __name__ == "__main__":

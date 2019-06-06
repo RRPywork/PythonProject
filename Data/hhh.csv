@@ -1,4 +1,100 @@
-,Name,Evergreenness,Coolness,Rank,Rank_1
-Evergreen,Mary Sue,1,10.0,3.0,3.0
-VeryEvergreen,Uncle Bob,10,10.0,1.0,3.0
-NotEvergreen,Robert Katz,0,1.0,2.0,2.0
+,Core,Frequency,Price,Line,Producer,Socket,L3,technical process,TDP
+AMD A10-9700,Bristol Ridge,3800,3450,AMD A10,AMD,AM4,0.0,28нм,65
+AMD A12-9800E,Bristol Ridge,3800,5559,AMD A12,AMD,AM4,0.0,28нм,65
+AMD A6-9500,Bristol Ridge,3800,1950,AMD A6,AMD,AM4,0.0,28нм,65
+AMD A6-9500E,Bristol Ridge,3400,3250,AMD A6,AMD,AM4,0.0,28нм,65
+AMD A8-9600,Bristol Ridge,3400,2799,AMD A8,AMD,AM4,0.0,28нм,65
+AMD Athlon 200GE,Raven Ridge,3600,2799,AMD Athlon,AMD,AM4,4.0,14нм,65
+AMD Athlon 220GE,Raven Ridge,3400,3799,AMD Athlon,AMD,AM4,4.0,14нм,65
+AMD Athlon 240GE,Raven Ridge,3500,3999,AMD Athlon,AMD,AM4,4.0,14нм,65
+AMD Athlon X2 340,Trinity,3600,1599,AMD Athlon X2,AMD,FM2,0.0,32нм,65
+AMD Athlon X4 840,Steamroller Kaveri,3800,1850,AMD Athlon X4,AMD,FM2+,0.0,28нм,65
+AMD Athlon X4 950,Bristol Ridge,3800,2650,AMD Athlon X4,AMD,AM4,0.0,28нм,65
+AMD FX-4300,Vishera,4000,2999,AMD FX,AMD,AM3+,8.0,32нм,125
+AMD FX-6300,Vishera,4000,3050,AMD FX,AMD,AM3+,8.0,32нм,125
+AMD FX-8300,Vishera,4200,3750,AMD FX,AMD,AM3+,8.0,32нм,125
+AMD FX-8320E,Vishera,4000,3899,AMD FX,AMD,AM3+,8.0,32нм,125
+AMD FX-8350,Vishera,4200,4650,AMD FX,AMD,AM3+,8.0,32нм,125
+AMD Ryzen 3 1200,Summit Ridge,3400,4799,AMD Ryzen 3,AMD,AM4,32.0,14нм,180
+AMD Ryzen 3 1300X,Summit Ridge,3700,6799,AMD Ryzen 3,AMD,AM4,32.0,14нм,180
+AMD Ryzen 3 2200G,Raven Ridge,3700,5550,AMD Ryzen 3,AMD,AM4,4.0,14нм,65
+AMD Ryzen 3 2200GE,Raven Ridge,3600,5559,AMD Ryzen 3,AMD,AM4,4.0,14нм,65
+AMD Ryzen 5 1600,Summit Ridge,3600,9099,AMD Ryzen 5,AMD,AM4,32.0,14нм,180
+AMD Ryzen 5 2400G,Raven Ridge,3900,8699,AMD Ryzen 5,AMD,AM4,4.0,14нм,65
+AMD Ryzen 5 2600,Pinnacle Ridge,3900,10799,AMD Ryzen 5,AMD,AM4,64.0,12нм,250
+AMD Ryzen 5 2600E,Pinnacle Ridge,4000,13999,AMD Ryzen 5,AMD,AM4,64.0,12нм,250
+AMD Ryzen 5 2600X,Pinnacle Ridge,4200,10799,AMD Ryzen 5,AMD,AM4,64.0,12нм,250
+AMD Ryzen 7 1700,Summit Ridge,3700,13699,AMD Ryzen 7,AMD,AM4,32.0,14нм,180
+AMD Ryzen 7 1800X,Summit Ridge,4200,17499,AMD Ryzen 7,AMD,AM4,32.0,14нм,180
+AMD Ryzen 7 2700,Pinnacle Ridge,4100,17499,AMD Ryzen 7,AMD,AM4,64.0,12нм,250
+AMD Ryzen 7 2700E,Pinnacle Ridge,4000,19999,AMD Ryzen 7,AMD,AM4,64.0,12нм,250
+AMD Ryzen 7 2700X,Pinnacle Ridge,4300,21999,AMD Ryzen 7,AMD,AM4,64.0,12нм,250
+AMD Ryzen Threadripper 1920X,Summit Ridge,4000,33299,AMD Ryzen Threadripper,AMD,TR4,32.0,14нм,180
+AMD Ryzen Threadripper 1950X,Summit Ridge,4000,47799,AMD Ryzen Threadripper,AMD,TR4,32.0,14нм,180
+AMD Ryzen Threadripper 2920X,Pinnacle Ridge,4300,48999,AMD Ryzen Threadripper,AMD,TR4,64.0,12нм,250
+AMD Ryzen Threadripper 2990WX,Pinnacle Ridge,4200,134999,AMD Ryzen Threadripper,AMD,TR4,64.0,12нм,250
+AMD Sempron 2650,Kabini,1450,2099,AMD Sempron,AMD,AM1,0.0,28нм,25
+AMD Sempron 3850,Kabini,1300,2650,AMD Sempron,AMD,AM1,0.0,28нм,25
+Intel Celeron G1840,Haswell,2800,4850,Intel Celeron,Intel,LGA 1150,8.0,22нм,80
+Intel Celeron G3930,Kaby Lake-S,2900,3799,Intel Celeron,Intel,LGA 1151,8.0,14нм,91
+Intel Celeron G4900,Coffee Lake S,3100,2999,Intel Celeron,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Celeron G4920,Coffee Lake S,3200,3750,Intel Celeron,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i3-7350K,Kaby Lake-S,4200,8999,Intel Core i3,Intel,LGA 1151,8.0,14нм,91
+Intel Core i3-8100,Coffee Lake S,3600,8550,Intel Core i3,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i3-8300,Coffee Lake S,3700,11999,Intel Core i3,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i3-8350K,Coffee Lake S,4000,10499,Intel Core i3,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i3-9100F,Coffee Lake R,4200,7750,Intel Core i3,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i3-9350KF,Coffee Lake R,4600,14799,Intel Core i3,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i5-6600K,Skylake-S,3900,18299,Intel Core i5,Intel,LGA 1151,8.0,14нм,80
+Intel Core i5-7400,Kaby Lake-S,3500,13299,Intel Core i5,Intel,LGA 1151,8.0,14нм,91
+Intel Core i5-8400,Coffee Lake S,4000,14499,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i5-8500,Coffee Lake S,4100,15999,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i5-9400,Coffee Lake R,4100,16499,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i5-9400F,Coffee Lake R,4200,12699,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i5-9600K,Coffee Lake R,4600,19299,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i5-9600KF,Coffee Lake R,4600,20799,Intel Core i5,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i7-6900K,Broadwell-E,4000,63999,Intel Core i7,Intel,LGA 2011-3,20.0,14нм,140
+Intel Core i7-7700,Kaby Lake-S,4200,25499,Intel Core i7,Intel,LGA 1151,8.0,14нм,91
+Intel Core i7-7700K,Kaby Lake-S,4500,27499,Intel Core i7,Intel,LGA 1151,8.0,14нм,91
+Intel Core i7-8086K,Coffee Lake S,5000,36499,Intel Core i7,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i7-8700,Coffee Lake S,4600,23499,Intel Core i7,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i7-8700K,Coffee Lake S,4700,28899,Intel Core i7,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Core i7-9700K,Coffee Lake R,4900,32499,Intel Core i7,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i7-9700KF,Coffee Lake R,4900,31499,Intel Core i7,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i7-9800X,Skylake-X,4400,47999,Intel Core i7,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9820X,Skylake-X,4100,66999,Intel Core i9,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9900K,Coffee Lake R,5000,39799,Intel Core i9,Intel,LGA 1151-v2,16.0,14нм,95
+Intel Core i9-9900X,Skylake-X,4400,81999,Intel Core i9,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9920X,Skylake-X,4400,92999,Intel Core i9,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9940X,Skylake-X,4400,103999,Intel Core i11,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9960X,Skylake-X,4400,124999,Intel Core i13,Intel,LGA 2066,22.75,14нм,165
+Intel Core i9-9980XE,Skylake-X,4400,178999,Intel Core i9,Intel,LGA 2066,22.75,14нм,165
+Intel Pentium G4400,Skylake-S,3300,4199,Intel Pentium,Intel,LGA 1151,8.0,14нм,80
+Intel Pentium G4560,Kaby Lake-S,3500,4650,Intel Pentium,Intel,LGA 1151,8.0,14нм,91
+Intel Pentium G4620,Kaby Lake-S,3700,7199,Intel Pentium,Intel,LGA 1151,8.0,14нм,91
+Intel Pentium Gold G5400,Coffee Lake S,3700,4550,Intel Pentium,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Pentium Gold G5500,Coffee Lake S,3800,8599,Intel Pentium,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Pentium Gold G5600,Coffee Lake S,3900,7899,Intel Pentium,Intel,LGA 1151-v2,16.0,14нм,62
+Intel Xeon E3-1220 v5,Skylake-S,3500,15299,Intel Xeon,Intel,LGA 1151,8.0,14нм,80
+Intel Xeon E3-1220 v6,Kaby Lake-S,3500,16799,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E3-1225 v5,Skylake-S,3700,17799,Intel Xeon,Intel,LGA 1151,8.0,14нм,80
+Intel Xeon E3-1225 v6,Kaby Lake-S,3700,18999,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E3-1230 v6,Kaby Lake-S,3900,20499,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E3-1240 v3,Haswell,3800,24499,Intel Xeon,Intel,LGA 1150,8.0,22нм,80
+Intel Xeon E3-1240 v5,Skylake-S,3900,22799,Intel Xeon,Intel,LGA 1151,8.0,14нм,80
+Intel Xeon E3-1240 v6,Kaby Lake-S,4100,23299,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E3-1241 v3,Haswell,3900,25999,Intel Xeon,Intel,LGA 1150,8.0,22нм,80
+Intel Xeon E3-1245 v5,Skylake-S,3900,22299,Intel Xeon,Intel,LGA 1151,8.0,14нм,80
+Intel Xeon E3-1270 v5,Skylake-S,4000,25999,Intel Xeon,Intel,LGA 1151,8.0,14нм,80
+Intel Xeon E3-1270 v6,Kaby Lake-S,4200,26499,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E3-1275 v6,Kaby Lake-S,4200,27499,Intel Xeon,Intel,LGA 1151,8.0,14нм,91
+Intel Xeon E5-1620 v4,Broadwell-EP,3800,23299,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-1630 v4,Broadwell-EP,4000,32999,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-1650 v4,Broadwell-EP,4000,49499,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-1660 v4,Broadwell-EP,3800,88999,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2603 v4,Broadwell-EP,1700,13799,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2623 v4,Broadwell-EP,3200,37299,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2630 v4,Broadwell-EP,3100,49499,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2637 v4,Broadwell-EP,3700,81999,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2640 v4,Broadwell-EP,3400,60999,Intel Xeon,Intel,LGA 2011-3,25.0,14нм,90
+Intel Xeon E5-2698 v3,Haswell-EP,3600,216999,Intel Xeon,Intel,LGA 2011-3,40.0,22нм,135

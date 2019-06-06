@@ -1,4 +1,6 @@
 """"""
+import os
+
 class Block:
     """"""
     def __init__(self, block_name):
@@ -20,7 +22,8 @@ class ConfigurationParser:
 
     def parse(self):
         """"""
-        with open(self.path, 'r') as f:
+        #print(os.path.dirname(os.path.realpath(__file__)))
+        with open(os.path.dirname(os.path.realpath(__file__))+'\\..\\Scripts\\'+self.path, 'r') as f:
             block_name = ""
             strs=f.readlines()
             for line in strs:

@@ -5,8 +5,8 @@
 (используем Pandas как обертку для MatPlotLib) но потоку не должно быть никакого дела до передаваемых по нему объектов.
 Author: Vitaly(Admin)
 """
-from Library.DataBase import DataBase
-from Library.DataFlow.DBInterface import DBInterface
+from Work.Library.DataBase import DataBase
+from Work.Library.DataFlow.DBInterface import DBInterface
 
 
 class DatabaseParser(DBInterface):

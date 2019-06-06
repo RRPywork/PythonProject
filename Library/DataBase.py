@@ -1,7 +1,7 @@
 """
 Попытка создать БД
 """
-
+import os
 from pandas import DataFrame
 from pandas import Series
 from pandas import read_csv
@@ -117,13 +117,13 @@ class DataBase:
 
     def store(self, filename):
         """"""
-        path = '..\\Data\\'
+        path = os.path.dirname(os.path.realpath(__file__))+'\\..\\Data\\'
         self.db.to_csv(path + filename + '.csv', index=True)
 
     def read(self, filename):
         """"""
         from pathlib import Path
-        path = '..\\Data\\'
+        path = os.path.dirname(os.path.realpath(__file__))+'\\..\\Data\\'
         path += filename + '.csv'
         file = Path(path)
         if not file.is_file():
