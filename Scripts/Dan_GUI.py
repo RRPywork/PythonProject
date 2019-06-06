@@ -753,6 +753,9 @@ class Reports(tk.Toplevel):
         self.plottype = "TEXT"
         self.text_type="PIVOT"
 
+    def MajorDescStats(self):
+
+
     def save_report(self):
         #Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
         #Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
