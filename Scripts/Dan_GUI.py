@@ -524,6 +524,7 @@ class Reports(tk.Toplevel):
     def init_child(self, view):
         self.title('Проект по питону')
         self.geometry('1000x550')
+        self.plottype="NONE"
         self.resizable(False, False)
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
         self.plot_area_frame.place(x=500,y=10,height=500,width=450)
@@ -539,13 +540,15 @@ class Reports(tk.Toplevel):
         self.menu.add_cascade(label='Файл', menu=new_item)
 
         self.btn_save = ttk.Button(self, text='Сохранить', command=self.save_report)
-        self.btn_save.place(x=100, y=100)
+        self.btn_save.place(x=100, y=300)
 
         value = StringVar()
         self.combo = ttk.Combobox(self.settings_area_frame, textvariable=value)
         lbl = tk.Label(self.settings_area_frame ,text='Выберите вид отчета:')
         lbl.place(x=10,y=7,height=20,width=150)
-        self.combo['values'] = ("Столбчатая диаграмма(кач-кач)","Гистограмма(кол-кач)", "Диаграмма Бокса-Вискера(кол-кач)","Диаграмма рассеивания(2 кол - кач)", "Сводная таблица (кач-кач)", "Набор осн. опис. стат")
+        self.combo['values'] = ("Столбчатая диаграмма(кач-кач)","Гистограмма(кол-кач)",
+                                "Диаграмма Бокса-Вискера(кол-кач)","Диаграмма рассеивания(2 кол - кач)",
+                                "Сводная таблица (кач-кач)", "Набор осн. опис. стат")
         self.combo.current(0)
         self.combo.place(x=10,y=30, height=20, width=200)
 
@@ -624,7 +627,7 @@ class Reports(tk.Toplevel):
             self.second_combo.current(0)
             self.second_combo.place(x=10,y=116, height=20,width=200)
             btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildhist)
-            btn2.bind('<Button-1>')
+            #btn2.bind('<Button-1>')
             btn2.place(x=230, y=73, height=20, width=70)
             self.third_combo = ttk.Combobox(self.settings_area_frame)
             lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
@@ -662,34 +665,58 @@ class Reports(tk.Toplevel):
             self.third_combo.place(x=10,y=159, height=20,width=200)
             lbl3.place_forget()
             self.third_combo.place_forget()
+        if self.combo.get()=="Сводная таблица (кач-кач)":
+            self.third_combo = ttk.Combobox(self.settings_area_frame)
+            self.first_combo = ttk.Combobox(self.settings_area_frame)
+            lbl1 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl1.place(x=10, y=50, height=20, width=200)
+            self.first_combo['values']=self.q_attrs
+            self.first_combo.current(0)
+            self.first_combo.place(x=10,y=73, height=20, width=200)
+            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
+            lbl2.place(x=10, y=93, height=20, width=200)
+            self.second_combo = ttk.Combobox(self.settings_area_frame)
+            self.second_combo['values']=self.q_attrs
+            self.second_combo.current(0)
+            self.second_combo.place(x=10,y=116, height=20,width=200)
+            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.BuildPivot)
+            btn2.place(x=230, y=73, height=20, width=70)
+            self.third_combo = ttk.Combobox(self.settings_area_frame)
+            lbl3 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут для аггрегации")
+            lbl3.place(x=10, y=136, height=20, width=300)
+            self.third_combo['values']=self.v_attrs
+            self.third_combo.current(0)
+            self.third_combo.place(x=10,y=159, height=20,width=200)
+            self.fourth_combo = ttk.Combobox(self.settings_area_frame)
+            lbl4 = tk.Label(self.settings_area_frame, text="Выберите метод аггрегации")
+            lbl4.place(x=10, y=186, height=20, width=200)
+            self.fourth_combo['values']=["mean", "sum", "standard deviation"]
+            self.fourth_combo.current(0)
+            self.fourth_combo.place(x=10,y=209, height=20,width=200)
 
     def Buildbar(self):
-        data = (20, 35, 37 ,39 ,40)
-        ind = np.arange(5)
-        width= .5
+        first_attr = self.first_combo.get()
+        second_attr = self.second_combo.get()
         self.ax.clear()
-        rects = self.ax.bar(ind, data, width)
-
+        self.dataframe.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
+        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildhist(self):
 
-        data = (20, 35, 37 ,39 ,40)
-
-        ind = np.arange(5)
-        width= .5
+        first_attr = self.first_combo.get()
+        second_attr = self.second_combo.get()
         self.ax.clear()
-        rects = self.ax.bar(ind, data, width)
-
+        self.dataframe.hist(ax=self.ax, column=first_attr, by=second_attr, bins=int(1+np.log2(len(self.dataframe[first_attr].values))))
+        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildbox(self):
-        data = (20, 0, 37 ,39 ,40)
-
-        ind = np.arange(5)
-        width= .5
+        first_attr = self.first_combo.get()
+        second_attr = self.second_combo.get()
         self.ax.clear()
-        rects = self.ax.boxplot((20, 35, 37 ,39 ,40),(20, 35, 37 ,39 ,40))
+        self.dataframe.boxplot(ax=self.ax, by=second_attr, column=first_attr)
+        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildscatter(self):
@@ -701,19 +728,41 @@ class Reports(tk.Toplevel):
         s = list(set(self.dataframe[third_attr].values))
         colormap = {s[i] : i for i in range(len(s))}
         colors = [colormap[element] for element in self.dataframe[third_attr].values]
-        print(colors)
-        #data = (20, 35, 37 ,39 ,40)
-
         ind = np.arange(5)
         width= .5
         self.ax.clear()
         #rects = self.ax.bar(ind, data, width)
         self.dataframe.plot.scatter(ax=self.ax, x=first_attr, y=second_attr, c=colors, colormap='viridis')
+        self.plottype="GRAPH"
         self.paint_figure()
 
-    def save_report(self):
+    def BuildPivot(self):
+        first_attr = self.first_combo.get()
+        second_attr = self.second_combo.get()
+        third_attr = self.third_combo.get()
+        agg_method = self.fourth_combo.get()
+        agg_func = None
+        if agg_method=="mean":
+            agg_func = np.mean
+        elif agg_method=="sum":
+            agg_func = np.sum
+        elif agg_method=="standard deviation":
+            agg_func = np.std
+        self.pivot = self.dataframe.pivot_table(index=first_attr, columns=second_attr, values=third_attr, fill_value=0, aggfunc=agg_func)
+        print(self.pivot)
+        self.plottype = "TEXT"
+        self.text_type="PIVOT"
 
-        pass
+    def save_report(self):
+        #Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
+        #Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
+        #Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
+        if self.plottype=="GRAPH":
+            self.figure.savefig("graph.png")
+        elif self.plottype=="TEXT":
+            if self.text_type == "PIVOT":
+                self.pivot.to_excel("..\\Output\\pivot_table.xlsx", sheet_name="pivot_table")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
