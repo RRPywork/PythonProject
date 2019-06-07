@@ -511,7 +511,9 @@ class Reports(tk.Toplevel):
         self.q_attrs = [str(attr) for attr in self.attributes if not attr in self.v_attrs]
         self.figure=plt.Figure(figsize=(5,4),dpi=75)
         self.ax= self.figure.add_subplot(111)
-
+        self.to_delete=[]
+        self.combos = []
+        self.labels=[]
         self.init_child(self.view)
 
 
@@ -529,7 +531,7 @@ class Reports(tk.Toplevel):
 
     def init_child(self, view):
         self.title('Проект по питону')
-        self.geometry('1000x550')
+        self.geometry('1200x550')
         self.plottype="NONE"
         self.resizable(False, False)
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
@@ -568,189 +570,118 @@ class Reports(tk.Toplevel):
         self.focus_set()
 
     def paint_figure(self):
-
+        """"""
         canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
         canvas.draw()
         canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
 
-    def click(self):
-        if self.combo.get()=="Диаграмма рассеивания(2 кол - кач)":
-            self.first_combo = ttk.Combobox(self.settings_area_frame)
-            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
-            lbl1.place(x=10, y=50, height=20, width=200)
-            self.first_combo['values']=self.v_attrs
-            self.first_combo.current(0)
-            self.first_combo.place(x=10,y=73, height=20, width=200)
-            lbl2 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
-            lbl2.place(x=10, y=93, height=20, width=200)
-            self.second_combo = ttk.Combobox(self.settings_area_frame)
-            self.second_combo['values']=self.v_attrs
-            self.second_combo.current(0)
-            self.second_combo.place(x=10,y=116, height=20,width=200)
-            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildscatter)
-            btn2.place(x=230, y=73, height=20, width=70)
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl3.place(x=10, y=136, height=20, width=200)
-            self.third_combo['values']=self.q_attrs
-            self.third_combo.current(0)
-            self.third_combo.place(x=10,y=159, height=20,width=200)
-        if self.combo.get()=="Столбчатая диаграмма(кач-кач)":
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            self.first_combo = ttk.Combobox(self.settings_area_frame)
-            lbl1 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl1.place(x=10, y=50, height=20, width=200)
-            self.first_combo['values']=self.q_attrs
-            self.first_combo.current(0)
-            self.first_combo.place(x=10,y=73, height=20, width=200)
-            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl2.place(x=10, y=93, height=20, width=200)
-            self.second_combo = ttk.Combobox(self.settings_area_frame)
-            self.second_combo['values']=self.q_attrs
-            self.second_combo.current(0)
-            self.second_combo.place(x=10,y=116, height=20,width=200)
-            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildbar)
-            btn2.place(x=230, y=73, height=20, width=70)
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl3.place(x=10, y=136, height=20, width=200)
-            self.third_combo['values']=self.q_attrs
-            self.third_combo.current(0)
-            self.third_combo.place(x=10,y=159, height=20,width=200)
-            lbl3.destroy()
-            self.third_combo.destroy()
-        if self.combo.get()=="Гистограмма(кол-кач)":
-            self.first_combo = ttk.Combobox(self.settings_area_frame)
-            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
-            lbl1.place(x=10, y=50, height=20, width=200)
-            self.first_combo['values']=self.v_attrs
-            self.first_combo.current(0)
-            self.first_combo.place(x=10,y=73, height=20, width=200)
-            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl2.place(x=10, y=93, height=20, width=200)
-            self.second_combo = ttk.Combobox(self.settings_area_frame)
-            self.second_combo['values']=self.q_attrs
-            self.second_combo.current(0)
-            self.second_combo.place(x=10,y=116, height=20,width=200)
-            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.Buildhist)
-            #btn2.bind('<Button-1>')
-            btn2.place(x=230, y=73, height=20, width=70)
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl3.place(x=10, y=136, height=20, width=200)
-            self.third_combo['values']=self.q_attrs
-            self.third_combo.current(0)
-            self.third_combo.place(x=10,y=159, height=20,width=200)
-            lbl3.place_forget()
-            self.third_combo.place_forget()
-            n1=self.first_combo.get()
-            n2=self.second_combo.get()
-            #print(n1,n2)
-        if self.combo.get()=="Диаграмма Бокса-Вискера(кол-кач)":
-            self.first_combo = ttk.Combobox(self.settings_area_frame)
-            lbl1 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут")
-            lbl1.place(x=10, y=50, height=20, width=200)
-            self.first_combo['values']=self.v_attrs
-            self.first_combo.current(0)
-            self.first_combo.place(x=10,y=73, height=20, width=200)
-            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl2.place(x=10, y=93, height=20, width=200)
-            self.second_combo = ttk.Combobox(self.settings_area_frame)
-            self.second_combo['values']=self.q_attrs
-            self.second_combo.current(0)
-            self.second_combo.place(x=10,y=116, height=20,width=200)
-            n=self.first_combo.get()
-            k=self.second_combo.get()
-            btn2 = tk.Button(self.settings_area_frame, text='Построить',command=self.Buildbox)
-            btn2.place(x=230, y=73, height=20, width=70)
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            lbl3 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl3.place(x=10, y=136, height=20, width=200)
-            self.third_combo['values']=self.q_attrs
-            self.third_combo.current(0)
-            self.third_combo.place(x=10,y=159, height=20,width=200)
-            lbl3.place_forget()
-            self.third_combo.place_forget()
-        if self.combo.get()=="Сводная таблица (кач-кач)":
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            self.first_combo = ttk.Combobox(self.settings_area_frame)
-            lbl1 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl1.place(x=10, y=50, height=20, width=200)
-            self.first_combo['values']=self.q_attrs
-            self.first_combo.current(0)
-            self.first_combo.place(x=10,y=73, height=20, width=200)
-            lbl2 = tk.Label(self.settings_area_frame, text="Выберите качественный атрибут")
-            lbl2.place(x=10, y=93, height=20, width=200)
-            self.second_combo = ttk.Combobox(self.settings_area_frame)
-            self.second_combo['values']=self.q_attrs
-            self.second_combo.current(0)
-            self.second_combo.place(x=10,y=116, height=20,width=200)
-            btn2 = ttk.Button(self.settings_area_frame, text='Построить',command=self.BuildPivot)
-            btn2.place(x=230, y=73, height=20, width=70)
-            self.third_combo = ttk.Combobox(self.settings_area_frame)
-            lbl3 = tk.Label(self.settings_area_frame, text="Выберите количественный атрибут для аггрегации")
-            lbl3.place(x=10, y=136, height=20, width=300)
-            self.third_combo['values']=self.v_attrs
-            self.third_combo.current(0)
-            self.third_combo.place(x=10,y=159, height=20,width=200)
-            self.fourth_combo = ttk.Combobox(self.settings_area_frame)
-            lbl4 = tk.Label(self.settings_area_frame, text="Выберите метод аггрегации")
-            lbl4.place(x=10, y=186, height=20, width=200)
-            self.fourth_combo['values']=["mean", "sum", "standard deviation"]
-            self.fourth_combo.current(0)
-            self.fourth_combo.place(x=10,y=209, height=20,width=200)
+    def clear(self):
+        self.figure.clear()
+        self.figure=plt.Figure(figsize=(5,4),dpi=75)
+        self.ax= self.figure.add_subplot(111)
 
-    def Buildbar(self):
-        first_attr = self.first_combo.get()
-        second_attr = self.second_combo.get()
-        vals = {i:0 for i in self.dataframe[first_attr].values}
+    def add_combo(self, attrs, text):
+        ys=[73,116,159,202]
+        self.combos.append(ttk.Combobox(self.settings_area_frame))
+        self.labels.append(tk.Label(self.settings_area_frame, text=text, anchor='w'))
+        self.to_delete.append(self.combos[-1])
+        self.combos[-1]["values"]=attrs
+        self.combos[-1].current(0)
+        self.combos[-1].place(x=10, y=ys[len(self.combos)-1], height=20, width=200)
+        self.labels[-1].place(x=10, y=ys[len(self.combos)-1]-23, height=20, width=300)
+        self.to_delete.append(self.labels[-1])
+
+    def click(self):
+        for i in self.to_delete:
+            i.destroy()
+        self.to_delete.clear()
+        self.combos.clear()
+        self.clear()
+        btn2 = ttk.Button(self.settings_area_frame, text='Построить')
+        if self.combo.get()=="Диаграмма рассеивания(2 кол - кач)":
+            self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
+            self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            btn2.bind("<Button-1>", self.Buildscatter)
+
+        if self.combo.get()=="Столбчатая диаграмма(кач-кач)":
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            btn2.bind("<Button-1>",self.Buildbar)
+        if self.combo.get()=="Гистограмма(кол-кач)":
+            self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            btn2.bind("<Button-1>",self.Buildhist)
+        if self.combo.get()=="Диаграмма Бокса-Вискера(кол-кач)":
+            self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            btn2.bind("<Button-1>",self.Buildbox)
+        if self.combo.get()=="Сводная таблица (кач-кач)":
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
+            self.add_combo(self.v_attrs, text="Выберите количественный атрибут для аггрегации")
+            self.add_combo(["mean", "sum", "standard deviation"], text="Выберите метод аггрегации")
+            btn2.bind("<Button-1>",self.BuildPivot)
+        btn2.place(x=230, y=73, height=20, width=70)
+
+
+    def Buildbar(self, event=None):
+        first_attr = self.combos[0].get()
+        second_attr = self.combos[1].get()
+        vals_prep = {i:set() for i in set(self.dataframe[first_attr].values)}
         for i in self.dataframe[[first_attr, second_attr]].values:
-            vals[i[0]]+=1
-        self.ax.clear()
-        d = pd.DataFrame({first_attr:list(set(self.dataframe[first_attr].values)), second_attr:vals})
+            vals_prep[i[0]].add(i[1])
+        self.clear()
+        vals = {i:len(vals_prep[i]) for i in vals_prep.keys()}
+        indices = list(set(self.dataframe[first_attr].values))
+        d = pd.DataFrame({first_attr:indices, second_attr:list(vals.values())})
         d.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
+        #add label, saying "Измеряется количество разных значений второго атрибута"
         self.plottype="GRAPH"
         self.paint_figure()
 
-    def Buildhist(self):
-
-        first_attr = self.first_combo.get()
-        second_attr = self.second_combo.get()
-        self.ax.clear()
+    def Buildhist(self, event=None):
+        first_attr = self.combos[0].get()
+        second_attr = self.combos[1].get()
+        self.clear()
         self.dataframe.hist(ax=self.ax, column=first_attr, by=second_attr, bins=int(1+np.log2(len(self.dataframe[first_attr].values))))
         self.plottype="GRAPH"
         self.paint_figure()
 
-    def Buildbox(self):
-        first_attr = self.first_combo.get()
-        second_attr = self.second_combo.get()
-        self.ax.clear()
+    def Buildbox(self, event=None):
+        first_attr = self.combos[0].get()
+        second_attr = self.combos[1].get()
+        self.clear()
         self.dataframe.boxplot(ax=self.ax, by=second_attr, column=first_attr)
         self.plottype="GRAPH"
         self.paint_figure()
 
-    def Buildscatter(self):
-        first_attr = self.first_combo.get()
-        second_attr = self.second_combo.get()
-        third_attr = self.third_combo.get()
-        step_size = 3/len(self.q_attrs)
-        color = [0,0,0]
+    def Buildscatter(self, event=None):
+        first_attr = self.combos[0].get()
+        second_attr = self.combos[1].get()
+        third_attr = self.combos[2].get()
         s = list(set(self.dataframe[third_attr].values))
         colormap = {s[i] : i for i in range(len(s))}
         colors = [colormap[element] for element in self.dataframe[third_attr].values]
         ind = np.arange(5)
         width= .5
-        self.ax.clear()
-        #rects = self.ax.bar(ind, data, width)
+        self.clear()
         self.dataframe.plot.scatter(ax=self.ax, x=first_attr, y=second_attr, c=colors, colormap='viridis')
+        text=""
+        for item in colormap.items():
+            text+=str(item[0]) + ":" + str(item[1]) + "\n"
+        self.lblLegend = tk.Label(self, text=text)
+        self.lblLegend.place(x=1000,y=10, height=len(colormap)*20, width=200)
+        self.to_delete.append(self.lblLegend)
         self.plottype="GRAPH"
+
         self.paint_figure()
 
-    def BuildPivot(self):
-        first_attr = self.first_combo.get()
-        second_attr = self.second_combo.get()
-        third_attr = self.third_combo.get()
-        agg_method = self.fourth_combo.get()
+    def BuildPivot(self, event=None):
+        first_attr = self.combos[0].get()
+        second_attr = self.combos[1].get()
+        third_attr = self.combos[2].get()
+        agg_method = self.combos[3].get()
         agg_func = None
         if agg_method=="mean":
             agg_func = np.mean
@@ -758,6 +689,7 @@ class Reports(tk.Toplevel):
             agg_func = np.sum
         elif agg_method=="standard deviation":
             agg_func = np.std
+        self.clear()
         self.pivot = self.dataframe.pivot_table(index=first_attr, columns=second_attr, values=third_attr, fill_value=0, aggfunc=agg_func)
         print(self.pivot)
         self.plottype = "TEXT"
@@ -785,9 +717,10 @@ class Reports(tk.Toplevel):
              self.tree.heading(i, text=i)
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.pivot.index.tolist(), self.pivot.values.tolist())]
+        self.to_delete.append(self.tree)
 
 
-    def MajorDescStats(self):
+    def MajorDescStats(self, event=None):
         pass
 
     def save_report(self):
