@@ -6,8 +6,9 @@ Created on Wed Apr  3 23:37:20 2019
 @author: baleskin
 """
 import sys
-sys.path.insert(0, '..\\')
-sys.path.insert(1, '..\\Library\\')
+sys.path.insert(0, '..\\..\\')
+sys.path.insert(1, '..\\')
+sys.path.insert(2, '..\\Library\\')
 
 from tkinter import messagebox as mb
 import tkinter as tk
