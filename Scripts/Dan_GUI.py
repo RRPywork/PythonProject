@@ -11,6 +11,7 @@ sys.path.insert(1, '..\\Library\\')
 
 from tkinter import messagebox as mb
 import tkinter as tk
+import pandas as pd
 from tkinter import ttk
 from tkinter import Canvas
 from tkinter import BooleanVar
@@ -702,8 +703,12 @@ class Reports(tk.Toplevel):
     def Buildbar(self):
         first_attr = self.first_combo.get()
         second_attr = self.second_combo.get()
+        vals = {i:0 for i in self.dataframe[first_attr].values}
+        for i in self.dataframe[[first_attr, second_attr]].values:
+            vals[i[0]]+=1
         self.ax.clear()
-        self.dataframe.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
+        d = pd.DataFrame({first_attr:list(set(self.dataframe[first_attr].values)), second_attr:vals})
+        d.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
         self.plottype="GRAPH"
         self.paint_figure()
 
