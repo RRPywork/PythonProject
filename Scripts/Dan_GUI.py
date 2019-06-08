@@ -550,7 +550,9 @@ class Reports(tk.Toplevel):
         """Автор этого метода - Тарунтаева"""
         super().__init__(root)
         self.view = app
-        self.state('zoomed')
+        self.title('Проект по питону')
+        self.geometry('1000x550')
+        self.resizable(False, False)
         self.dataframe = self.view.dp.working_db.get_db()
         self.attributes = list(self.dataframe.keys())
         self.v_attrs = [str(attr) for attr in self.attributes if self.is_val_attr(str(attr))]
@@ -581,8 +583,6 @@ class Reports(tk.Toplevel):
 
     def init_child(self, view):
         """Формирует окно"""
-        self.title('Проект по питону')
-        self.geometry('1000x550')
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
         self.plot_area_frame.place(x=500, y=10, height=500, width=450)
 
@@ -595,9 +595,12 @@ class Reports(tk.Toplevel):
         new_item.add_separator()
         new_item.add_command(label='Изменить')
         self.menu.add_cascade(label='Файл', menu=new_item)
-
+        
+        
+        self.btn_cancel = ttk.Button(self.settings_area_frame, text='Закрыть', command=self.destroy)
+        self.btn_cancel.pack(anchor='se', side='right', padx=7, pady=7)
         self.btn_save = ttk.Button(self.settings_area_frame, text='Сохранить', command=self.open_save_report)
-        self.btn_save.pack(side='bottom', anchor='se')
+        self.btn_save.pack(side='right', anchor='se', padx=7, pady=7)
 
         value = StringVar()
         self.combo = ttk.Combobox(self.settings_area_frame, textvariable=value)
@@ -611,9 +614,6 @@ class Reports(tk.Toplevel):
 
         self.choose_btn = ttk.Button(self.settings_area_frame, text='Выбрать', command=self.click)
         self.choose_btn.place(x=250, y=30, width=70)
-
-        self.btn_cancel = ttk.Button(self.settings_area_frame, text='Закрыть', command=self.destroy)
-        self.btn_cancel.pack(anchor='se', side='bottom')
         #        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
         self.grab_set()
         self.focus_set()
@@ -680,12 +680,19 @@ class Reports(tk.Toplevel):
             self.add_combo(["mean", "sum", "standard deviation"], text="Выберите метод аггрегации")
             btn2.bind("<Button-1>", self.build_pivot)
         if self.combo.get() == "Набор осн. опис. стат":
-            self.listbox = tk.Listbox(self.settings_area_frame, selectmode='extended', height=5)
+            self.frame = tk.Frame(self.settings_area_frame)
+            self.frame.place(x=10, y=70)
+            self.frame1 = tk.Frame(self.frame)
+            self.frame1.pack(side='bottom')
+            self.scrollbar2 = tk.Scrollbar(self.frame1, orient=tk.VERTICAL)
+            self.scrollbar2.pack(side='right', fill='y')
+            self.listbox = tk.Listbox(self.frame1, selectmode='extended', height=5, yscrollcommand=self.scrollbar2.set)
+            self.scrollbar2.config(command=self.listbox.yview)
             [self.listbox.insert('end', i) for i in self.v_attrs]
-            self.label = tk.Label(self.settings_area_frame, text='Выберите атрибуты:')
-            self.label.place(x=10, y=70)
+            self.label = tk.Label(self.frame, text='Выберите атрибуты:', pady=7)
+            self.label.pack(side='top')
             self.to_delete.append(self.label)
-            self.listbox.place(x=10, y=95)
+            self.listbox.pack(anchor='nw')
             self.to_delete.append(self.listbox)
             btn2.bind("<Button-1>", lambda event: self.major_desc_stats(self.listbox.curselection()))
         btn2.place(x=250, y=73, width=70)
