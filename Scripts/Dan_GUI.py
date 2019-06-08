@@ -74,7 +74,7 @@ class Main(tk.Frame):
         self.scrollbar2.pack(side='right', fill='y')
         
         
-        self.tree = ttk.Treeview(self, columns=[i for i in atributes], height=15, 
+        self.tree = ttk.Treeview(self, columns=[i for i in atributes], height=100, 
                                  xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
         self.tree.pack(side='top')
         
@@ -91,7 +91,7 @@ class Main(tk.Frame):
         self.update_DB()
 
     def open_reports(self):
-        Reports()
+        self.app1 = Reports()
 
     def download_session(self, entry):
         #print('11111')
@@ -506,6 +506,7 @@ class Reports(tk.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.view = app
+        self.state('zoomed')
         self.dataframe = self.view.dp.working_db.get_db()
         self.attributes = list(self.dataframe.keys())
         self.v_attrs = [str(attr) for attr in self.attributes if self.isValAttr(str(attr))]
@@ -532,9 +533,8 @@ class Reports(tk.Toplevel):
 
     def init_child(self, view):
         self.title('Проект по питону')
-        self.geometry('1200x550')
+        self.geometry('1000x550')
         self.plottype="NONE"
-        self.resizable(False, False)
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
         self.plot_area_frame.place(x=500,y=10,height=500,width=450)
 
@@ -548,25 +548,25 @@ class Reports(tk.Toplevel):
         new_item.add_command(label='Изменить')
         self.menu.add_cascade(label='Файл', menu=new_item)
 
-        self.btn_save = ttk.Button(self, text='Сохранить', command=self.save_report)
-        self.btn_save.place(x=100, y=300)
+        self.btn_save = ttk.Button(self.settings_area_frame, text='Сохранить', command=self.open_save_report)
+        self.btn_save.pack(side='bottom', anchor='se')
 
         value = StringVar()
         self.combo = ttk.Combobox(self.settings_area_frame, textvariable=value)
         lbl = tk.Label(self.settings_area_frame ,text='Выберите вид отчета:')
-        lbl.place(x=10,y=7,height=20,width=150)
+        lbl.place(x=10,y=7,width=150)
         self.combo['values'] = ("Столбчатая диаграмма(кач-кач)","Гистограмма(кол-кач)",
                                 "Диаграмма Бокса-Вискера(кол-кач)","Диаграмма рассеивания(2 кол - кач)",
                                 "Сводная таблица (кач-кач)", "Набор осн. опис. стат")
         self.combo.current(0)
-        self.combo.place(x=10,y=30, height=20, width=200)
+        self.combo.place(x=10,y=30, width=200)
 
         self.choose_btn = ttk.Button(self.settings_area_frame, text='Выбрать',command=self.click)
-        self.choose_btn.place(x=230, y=30, height=20, width=70)
+        self.choose_btn.place(x=230, y=30, width=70)
 
-        self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
-        self.btn_cancel.place(x=240, y=265)
-        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
+        self.btn_cancel = ttk.Button(self.settings_area_frame, text='Закрыть', command=self.destroy)
+        self.btn_cancel.pack(anchor='se', side='bottom')
+#        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
         self.grab_set()
         self.focus_set()
 
@@ -588,8 +588,8 @@ class Reports(tk.Toplevel):
         self.to_delete.append(self.combos[-1])
         self.combos[-1]["values"]=attrs
         self.combos[-1].current(0)
-        self.combos[-1].place(x=10, y=ys[len(self.combos)-1], height=20, width=200)
-        self.labels[-1].place(x=10, y=ys[len(self.combos)-1]-23, height=20, width=300)
+        self.combos[-1].place(x=10, y=ys[len(self.combos)-1]+2, height=20, width=200)
+        self.labels[-1].place(x=10, y=ys[len(self.combos)-1]-21, height=20)
         self.to_delete.append(self.labels[-1])
 
     def click(self):
@@ -623,7 +623,7 @@ class Reports(tk.Toplevel):
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут для аггрегации")
             self.add_combo(["mean", "sum", "standard deviation"], text="Выберите метод аггрегации")
             btn2.bind("<Button-1>",self.BuildPivot)
-        btn2.place(x=230, y=73, height=20, width=70)
+        btn2.place(x=230, y=73, width=70)
 
 
     def Buildbar(self, event=None):
@@ -700,7 +700,7 @@ class Reports(tk.Toplevel):
 
         self.scrollbar2 = tk.Scrollbar(self.plot_area_frame, orient=tk.VERTICAL)
         self.scrollbar2.pack(side='right', fill='y')
-        self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.pivot.keys()], height=15,
+        self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.pivot.keys()], height=50,
                                  xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
         self.tree.pack(side='right')
 
@@ -719,16 +719,12 @@ class Reports(tk.Toplevel):
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.pivot.index.tolist(), self.pivot.values.tolist())]
         self.to_delete.append(self.tree)
-
-
-    def MajorDescStats(self, event=None):
-        pass
-
-    def save_report(self):
-        #Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
-        #Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
-        #Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
-        name = "graph1.png"#change to choice result
+        
+    def save_report(self, entry, combobox):
+#        Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
+#        Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
+#        Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
+        name = entry.get()+combobox.get().lower()#change to choice result
         if self.plottype=="GRAPH":
             f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name, 'w')
             f.close()
@@ -741,6 +737,52 @@ class Reports(tk.Toplevel):
                 self.pivot.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, sheet_name="pivot_table")
 
 
+    def MajorDescStats(self, event=None):
+        pass
+                
+    def open_save_report(self):
+        Save_report()
+    
+class Save_report(tk.Toplevel):
+    def __init__(self):
+        super().__init__(root)
+#        self.plottype1 = plottype
+#        self.figure1 = figure
+#        self.text_type1 = text_type
+#        self.pivot1 = pivot
+        self.view = app
+        self.init_child()
+        
+    def init_child(self):
+        self.title('Сохранение отчета')
+        self.geometry('300x200+400+300')
+        self.resizable(False, False)
+        
+        self.label_name1 = tk.Label(self, text='Введите название файла (без расширения):')
+        self.label_name1.pack(side='top', pady=7)
+        
+        self.entry = ttk.Entry(self, width=30)
+        self.entry.pack(side='top', pady=7)
+        
+        self.label_name1 = tk.Label(self, text='Выберите расширение:')
+        self.label_name1.pack(side='top', pady=7)
+        
+        self.combobox = ttk.Combobox(self, values=['PDF','PNG','JPEG'])
+        self.combobox.pack(side='top', pady=7)
+        
+        
+        
+        self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
+        self.btn_cancel.place(x=210, y=160)
+
+        self.btn_ok = ttk.Button(self, text='Сохранить', command=self.destroy)
+        self.btn_ok.place(x=130, y=160)
+        
+        self.btn_ok.bind('<Button-1>', lambda event: self.view.app1.save_report(self.entry, self.combobox))
+        
+        self.grab_set()
+        self.focus_set() 
+    
 if __name__ == "__main__":
     root = tk.Tk()
     cp = ConfigurationParser("config.ini")
@@ -753,6 +795,6 @@ if __name__ == "__main__":
     app = Main(root, atributes)
     app.pack()
     root.title("База данных CPU")
+    root.state('zoomed')
     root.geometry("650x345+300+200")
-    root.resizable(False, False)
     root.mainloop()
