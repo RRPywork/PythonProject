@@ -597,7 +597,8 @@ class SaveDB(tk.Toplevel):
 class Reports(tk.Toplevel):
     """Автор: Литвиненко"""
     def __init__(self):
-        """Автор этого метода - Тарунтаева"""
+        """Конструктор класса
+           Автор этого метода - Тарунтаева"""
         super().__init__(root)
         self.view = app
         self.title('Проект по питону')
@@ -632,7 +633,7 @@ class Reports(tk.Toplevel):
                 return False
         return True
 
-    def init_child(self, view):
+    def init_child(self):
         """Формирует окно
            Автор - Литвиненко Алексей"""
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
@@ -666,7 +667,6 @@ class Reports(tk.Toplevel):
 
         self.choose_btn = ttk.Button(self.settings_area_frame, text='Выбрать', command=self.click)
         self.choose_btn.place(x=250, y=30, width=70)
-        #        self.btn_cancel.bind('<Button-1>', lambda event: self.view.destroy_links())
         self.grab_set()
         self.focus_set()
 
@@ -919,7 +919,8 @@ class Reports(tk.Toplevel):
         self.to_file = self.df
 
     def open_save_report(self):
-        """Сохранение отчета"""
+        """Сохранение отчета
+           Автор - Литвиненко Алексей"""
         SaveReport(self.to_file, self.report_type, self.text_type)
 
 
@@ -929,7 +930,8 @@ class SaveReport(tk.Toplevel):
     Автор: Балескин
     """
     def __init__(self, to_file, report_type, text_type="NONE"):
-        """"""
+        """Конструктор класса
+           Автор - Балескин Виталий"""
         super().__init__(root)
         self.to_file = to_file
         self.report_type = report_type
@@ -938,7 +940,8 @@ class SaveReport(tk.Toplevel):
         self.init_child()
 
     def init_child(self):
-        """"""
+        """Формирование окна
+           Автор - Балескин Виталий"""
         self.title('Сохранение отчета')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -968,7 +971,8 @@ class SaveReport(tk.Toplevel):
         self.focus_set()
 
     def save(self, event=None):
-        """сохранение"""
+        """сохранение
+           Автор - Балескин Виталий"""
         self.filename = self.entry.get()
         self.extension = self.combobox.get()
         if self.report_type == 'GRAPH':
@@ -1009,3 +1013,4 @@ if __name__ == "__main__":
     root.state('zoomed')
     root.geometry("650x345+300+200")
     root.mainloop()
+    
