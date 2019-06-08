@@ -516,6 +516,9 @@ class Reports(tk.Toplevel):
         self.to_delete=[]
         self.combos = []
         self.labels=[]
+        self.to_file = None
+        self.report_type= "NONE"
+        self.text_type="NONE"
         self.init_child(self.view)
 
 
@@ -534,7 +537,6 @@ class Reports(tk.Toplevel):
     def init_child(self, view):
         self.title('Проект по питону')
         self.geometry('1000x550')
-        self.plottype="NONE"
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
         self.plot_area_frame.place(x=500,y=10,height=500,width=450)
 
@@ -572,9 +574,11 @@ class Reports(tk.Toplevel):
 
     def paint_figure(self):
         """"""
+        self.report_type= "GRAPH"
         canvas = FigureCanvasTkAgg(self.figure , master=self.plot_area_frame)
         canvas.draw()
         canvas.get_tk_widget().place(x=20,y=10,height=450,width=400)
+        self.to_file = self.figure
 
     def clear(self):
         self.figure.clear()
@@ -638,7 +642,6 @@ class Reports(tk.Toplevel):
         d = pd.DataFrame({first_attr:indices, second_attr:list(vals.values())})
         d.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
         #add label, saying "Измеряется количество разных значений второго атрибута"
-        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildhist(self, event=None):
@@ -646,7 +649,6 @@ class Reports(tk.Toplevel):
         second_attr = self.combos[1].get()
         self.clear()
         self.dataframe.hist(ax=self.ax, column=first_attr, by=second_attr, bins=int(1+np.log2(len(self.dataframe[first_attr].values))))
-        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildbox(self, event=None):
@@ -654,7 +656,6 @@ class Reports(tk.Toplevel):
         second_attr = self.combos[1].get()
         self.clear()
         self.dataframe.boxplot(ax=self.ax, by=second_attr, column=first_attr)
-        self.plottype="GRAPH"
         self.paint_figure()
 
     def Buildscatter(self, event=None):
@@ -674,8 +675,6 @@ class Reports(tk.Toplevel):
         self.lblLegend = tk.Label(self, text=text)
         self.lblLegend.place(x=1000,y=10, height=len(colormap)*20, width=200)
         self.to_delete.append(self.lblLegend)
-        self.plottype="GRAPH"
-
         self.paint_figure()
 
     def BuildPivot(self, event=None):
@@ -693,7 +692,7 @@ class Reports(tk.Toplevel):
         self.clear()
         self.pivot = self.dataframe.pivot_table(index=first_attr, columns=second_attr, values=third_attr, fill_value=0, aggfunc=agg_func)
         print(self.pivot)
-        self.plottype = "TEXT"
+        self.report_type = "TEXT"
         self.text_type="PIVOT"
         self.scrollbar1 = tk.Scrollbar(self.plot_area_frame, orient=tk.HORIZONTAL)
         self.scrollbar1.pack(side='bottom', fill='x')
@@ -703,7 +702,7 @@ class Reports(tk.Toplevel):
         self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.pivot.keys()], height=50,
                                  xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
         self.tree.pack(side='right')
-
+        self.to_file = self.pivot
         for i in self.pivot.keys():
              self.tree.column(i, anchor=tk.CENTER)
 
@@ -725,11 +724,11 @@ class Reports(tk.Toplevel):
 #        Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
 #        Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
         name = entry.get()+combobox.get().lower()#change to choice result
-        if self.plottype=="GRAPH":
+        if self.report_type== "GRAPH":
             f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name, 'w')
             f.close()
             self.figure.savefig(fname=os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name)
-        elif self.plottype=="TEXT":
+        elif self.report_type== "TEXT":
             if self.text_type == "PIVOT":
                 name = "text1.xlsx"
                 f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, 'w')
@@ -741,15 +740,18 @@ class Reports(tk.Toplevel):
         pass
                 
     def open_save_report(self):
-        Save_report()
+        Save_report(self.to_file, self.report_type, self.text_type)
     
 class Save_report(tk.Toplevel):
-    def __init__(self):
+    def __init__(self, to_file, report_type, text_type="NONE"):
         super().__init__(root)
 #        self.plottype1 = plottype
 #        self.figure1 = figure
 #        self.text_type1 = text_type
 #        self.pivot1 = pivot
+        self.to_file = to_file
+        self.report_type = report_type
+        self.text_type = text_type
         self.view = app
         self.init_child()
         
@@ -766,8 +768,13 @@ class Save_report(tk.Toplevel):
         
         self.label_name1 = tk.Label(self, text='Выберите расширение:')
         self.label_name1.pack(side='top', pady=7)
-        
-        self.combobox = ttk.Combobox(self, values=['PDF','PNG','JPEG'])
+        if self.report_type=='GRAPH' :
+            self.combobox = ttk.Combobox(self, values=['PDF','PNG','JPEG'])
+        elif self.report_type=='TEXT':
+            if self.text_type=='PIVOT':
+                self.combobox = ttk.Combobox(self, values=['xlsx'])
+            elif self.text_type=='MDS':
+                self.combobox = ttk.Combobox(self, values=['txt'])
         self.combobox.pack(side='top', pady=7)
         
         
@@ -775,13 +782,29 @@ class Save_report(tk.Toplevel):
         self.btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
         self.btn_cancel.place(x=210, y=160)
 
-        self.btn_ok = ttk.Button(self, text='Сохранить', command=self.destroy)
+        self.btn_ok = ttk.Button(self, text='Сохранить', command=self.save)
         self.btn_ok.place(x=130, y=160)
         
-        self.btn_ok.bind('<Button-1>', lambda event: self.view.app1.save_report(self.entry, self.combobox))
+        #self.btn_ok.bind('<Button-1>', lambda event: self.save)
         
         self.grab_set()
-        self.focus_set() 
+        self.focus_set()
+
+    def save(self, event=None):
+        self.filename = self.entry.get()
+        self.extension = self.combobox.get()
+        if(self.report_type=='GRAPH'):
+            f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ self.filename + '.' + self.extension, 'w')
+            f.close()
+            self.to_file.savefig(fname=os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ self.filename + '.' + self.extension)
+        elif(self.report_type=='TEXT'):
+            if self.text_type=='PIVOT':
+                f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, 'w')
+                f.close()
+                self.to_file.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, sheet_name="pivot_table")
+        self.destroy()
+
+
     
 if __name__ == "__main__":
     root = tk.Tk()
