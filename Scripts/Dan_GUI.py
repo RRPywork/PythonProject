@@ -26,13 +26,20 @@ from Work.Library.configuration_parser import *
 
 
 class Main(tk.Frame):
-    """Основное окно"""
+    """Основное окно
+       Автор - Колесов Даниил"""
     def __init__(self, root, atributes):
+        """Конструктор основного окна
+           Автор - Колесов Даниил
+           Вход - список начальных атрибутов, корневой элемент графического интерфейса"""
         super().__init__(root)
         self.init_main(atributes)
         self.dp = dp
 
     def init_main(self, atributes):
+        """Формирует окно
+           Автор - Колесов Даниил
+           Вход - список начальных атрибутов"""
         toolbar = tk.Frame(bg='#d7d8e0', bd=2)
         toolbar.pack(side=tk.TOP, fill=tk.X)
         mainmenu = tk.Menu(root)
@@ -58,7 +65,6 @@ class Main(tk.Frame):
         mainmenu.add_cascade(label="База данных", menu=showmenu)
 
         mainmenu.add_command(label='Сохранить', command=self.open_save_db)
-        mainmenu.add_command(label='Справка', command=self.open_info)
         mainmenu.add_command(label='Отчеты', command=self.open_reports)
         mainmenu.add_command(label='×', command=self.destroy_links)
 
@@ -86,19 +92,25 @@ class Main(tk.Frame):
         self.update_db()
 
     def open_reports(self):
-        self.app1 = Reports()
+        """Открытие окна с отчетами
+           Автор - Колесов Даниил"""
+        Reports()
 
     def download_session(self, entry):
-        # print('11111')
-        # print(entry.get()+'!')
+        """Загрузка сессии
+           Автор - Колесов Даниил"""
         dp.parse("LOAD", entry.get())
         self.update_db()
 
     def destroy_links(self):
+        """Сброс выделения
+           Автор - Колесов Даниил"""
         self.tree.focus_set()
         self.update_db()
 
     def update_db(self):
+        """Обновление TreeView
+           Автор - Колесов Даниил"""
         self.tree.config(columns=[i for i in dp.working_db.get_db().columns])
         for i in dp.working_db.get_db().columns:
             self.tree.column(i, anchor=tk.CENTER)
@@ -109,19 +121,21 @@ class Main(tk.Frame):
                              dp.working_db.get_db().values.tolist())]
 
     def add_object(self, key_entry, entries):
-        """"""
+        """Добавление объекта
+           Автор - Колесов Даниил"""
         dp.parse("APPEND", [], [key_entry.get()], [{i: j for i, j in
-                                                    zip(dp.working_db.get_db().columns, [k.get() for k in entries])}],
-                 None)
+                 zip(dp.working_db.get_db().columns, [k.get() for k in entries])}],None)
         self.update_db()
 
     def add_atribute(self, entry, combobox):
-        """"""
+        """Добавление атрибута
+           Автор - Колесов Даниил"""
         dp.parse("APPEND", [entry.get()], [], [], None)
         self.update_db()
 
     def delete_object(self):
-        """"""
+        """Удаление объекта
+           Автор - Колесов Даниил"""
         if self.tree.selection() == ():
             mb.showerror('Ошибка', 'Должны быть выбраны объекты')
         else:
@@ -130,19 +144,22 @@ class Main(tk.Frame):
             self.update_db()
 
     def delete_atribute(self, entries):
-        """"""
+        """Удаление атрибута
+           Автор - Колесов Даниил"""
         dp.parse("DELETE", [dp.working_db.get_db().columns[i] for i in entries], [])
         self.update_db()
 
     def edit_object(self, entries):
-        """"""
+        """Редактирование объекта
+           Автор - Колесов Даниил"""
         for i, j in zip(dp.working_db.get_db().columns, entries):
             dp.parse("CHANGE", i, self.tree.item(self.tree.selection()[0])['text'], str(j.get()))
         self.tree.focus_set()
         self.update_db()
 
     def select_all(self, variables):
-        """"""
+        """Выбор всех атрибутов
+           Автор - Колесов Даниил"""
         for i in variables:
             if i.get() is False:
                 [j.set(True) for j in variables]
@@ -150,69 +167,79 @@ class Main(tk.Frame):
                 [j.set(False) for j in variables]
 
     def edit_atribute(self, combobox, entry):
-        """"""
+        """Редактирование атрибута
+           Автор - Колесов Даниил"""
         dp.parse("RENAME", {combobox.get(): entry.get()}, "columns")
         self.update_db()
 
     def view_records(self, variables, atributes):
-        """"""
+        """Построение DataFrame
+           Автор - Колесов Даниил"""
         dp.parse("DISPLAY", ["-i"] + [i for i, j in zip(atributes, variables) if j.get()], [None, None], None)
         self.update_db()
 
     def save_db(self, entry):
-        """"""
+        """Сохранение БД
+        Автор - Колесов Даниил"""
         dp.parse("STORE", entry.get())
 
     def open_download_session(self):
-        """"""
+        """Вызов окна загрузки сессии
+           Автор - Колесов Даниил"""
         DownloadSession()
 
-    def open_info(self):
-        """"""
-        pass
-
     def open_add_object(self):
-        """"""
-        AddObject(atributes)
+        """Вызов окна добавления объекта
+           Автор - Колесов Даниил"""
+        AddObject()
 
     def open_add_atribute(self):
-        """"""
+        """Вызов окна добавления атрибута
+           Автор - Колесов Даниил"""
         AddAtribute()
 
     def open_delete_dialog(self):
-        """"""
+        """Вызов окна удаления атрибута
+           Автор - Колесов Даниил"""
         DeleteAtribute()
 
     def open_edit_object(self):
-        """"""
+        """Вызов окна редактирования объекта
+           Автор - Колесов Даниил"""
         if self.tree.selection() == ():
             mb.showerror('Ошибка', 'Должен быть выбран объект')
         else:
             EditObject()
 
     def open_edit_atribute(self):
-        """"""
+        """Вызов окна редактирования атрибута
+           Автор - Колесов Даниил"""
         EditAtribute()
 
     def open_show_db(self):
-        """"""
+        """Вызов окна Базы Данных
+           Автор - Колесов Даниил"""
         ShowDB(atributes)
 
     def open_save_db(self):
-        """"""
+        """Вызов окна сохранения базы данных
+           Автор - Колесов Даниил"""
         SaveDB()
 
 
 class DownloadSession(tk.Toplevel):
-    """Загрузка сессии из файла Авторы - Тарунтаева"""
+    """Загрузка сессии из файла 
+       Авторы - Тарунтаева"""
     def __init__(self):
-        """Автор этого метода - Колесов"""
+        """Конструтор класса
+           Автор этого метода - Колесов"""
         super().__init__(root)
         self.init_child()
         self.view = app
 
     def init_child(self):
-        """"""
+        """Формирует окно
+           Автор - Тарунтаева"""
         self.title('Загрузка сессии')
         self.geometry('300x150+400+300')
         self.resizable(False, False)
@@ -241,13 +268,15 @@ class DownloadSession(tk.Toplevel):
 class DeleteAtribute(tk.Toplevel):
     """Удаление атрибута Автор - Тарунтаева"""
     def __init__(self):
-        """Автор этого метода - Колесов"""
+        """Конструктор класса
+           Автор этого метода - Колесов"""
         super().__init__(root)
         self.init_child()
         self.view = app
 
     def init_child(self):
-        """"""
+        """Формирует окно
+           Автор - Тарунтаева"""
         self.title('Удалить атрибуты')
         self.geometry('200x300+400+300')
         self.resizable(False, False)
@@ -274,15 +303,18 @@ class DeleteAtribute(tk.Toplevel):
 
 
 class AddObject(tk.Toplevel):
-    """Добавление объекта"""
-    def __init__(self, parent):
-        """Автор - Балескин - только этого метода"""
+    """Добавление объекта
+       Автор - колесов Даниил"""
+    def __init__(self):
+        """Конструктор класса
+           Автор - Балескин - только этого метода"""
         super().__init__(root)
-        self.init_child(atributes)
+        self.init_child()
         self.view = app
 
-    def init_child(self, atributes):
-        """"""
+    def init_child(self):
+        """Формирует окно
+           Автор - Колесов Даниил"""
         self.title('Добавить новый объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
@@ -331,13 +363,15 @@ class AddObject(tk.Toplevel):
 class AddAtribute(tk.Toplevel):
     """Добавление атрибута Автор - Балескин"""
     def __init__(self):
-        """"""
+        """Конструктор класса
+           Автор - Балескин Виталий"""
         super().__init__(root)
-        self.init_child(atributes)
+        self.init_child()
         self.view = app
 
-    def init_child(self, atributes):
-        """"""
+    def init_child(self):
+        """Формирует окно
+           Автор - Балескин Виталий"""
         self.title('Добавить новый атрибут')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -367,15 +401,18 @@ class AddAtribute(tk.Toplevel):
 
 
 class EditAtribute(tk.Toplevel):
-    """Окно изменения атрибута"""
+    """Окно изменения атрибута
+       Автор - Колесов Даниил"""
     def __init__(self):
-        """"""
+        """Конструктор класса
+           Автор - Колесов Даниил"""
         super().__init__(root)
         self.init_child()
         self.view = app
 
     def init_child(self):
-        """"""
+        """Формирует окно
+           Автор - Колесов Даниил"""
         self.title('Редактировать атрибут')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -405,15 +442,19 @@ class EditAtribute(tk.Toplevel):
 
 
 class EditObject(tk.Toplevel):
-    """Окно изменения объекта"""
+    """Окно изменения объекта
+       Автор - Колесов Даниил"""
     def __init__(self):
-        """"""
+        """Конструктор класса
+           Автор - Колесов Даниил"""
         super().__init__(root)
         self.view = app
-        self.init_child(self.view)
+        self.init_child()
 
-    def init_child(self, view):
-        """"""
+    def init_child(self):
+        """Формирует окно
+           Автор - Колесов Даниил
+           """
         self.title('Редактировать объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
@@ -438,7 +479,7 @@ class EditObject(tk.Toplevel):
                         zip(range(len(dp.working_db.get_db().columns)), self.Variables)]
 
         [self.Variables[j].set(i) for i, j in
-         zip(view.tree.item(view.tree.selection())['values'], range(len(self.Variables)))]
+         zip(self.view.tree.item(self.view.tree.selection())['values'], range(len(self.Variables)))]
         for i, j in zip([i for i in range(len(dp.working_db.get_db().columns))], self.Labels):
             j.grid(row=i, column=2, pady=3, padx=30, sticky='w')
 
@@ -459,15 +500,20 @@ class EditObject(tk.Toplevel):
 
 
 class ShowDB(tk.Toplevel):
-    """Отображение и обновление БД"""
+    """Отображение и обновление БД
+       Автор - Колесов Даниил"""
     def __init__(self, atributes):
-        """"""
+        """Конструктор класса
+           Автор - Колесов Даниил
+           Вход - список изначальных атрибутов"""
         super().__init__(root)
         self.init_child(atributes)
         self.view = app
 
     def init_child(self, atributes):
-        """"""
+        """Формирует окно
+           Автор - Колесов Даниил
+           Вход - список изначальных атрибутов"""
         self.title('Отобразить')
         self.geometry('200x300+400+300')
         self.resizable(False, False)
@@ -511,14 +557,18 @@ class ShowDB(tk.Toplevel):
 
 
 class SaveDB(tk.Toplevel):
-    """Сохранение сессионной БД"""
+    """Сохранение сессионной БД
+       Автор - Колесов Даниил"""
     def __init__(self):
+        """Конструктор класса
+           Автор - Колесов Даниил"""
         super().__init__(root)
         self.init_child()
         self.view = app
 
     def init_child(self):
-        """"""
+        """Формирует окно
+           Автор - Колесов Даниил"""
         self.title('Сохранение базы данных')
         self.geometry('300x150+400+300')
         self.resizable(False, False)
@@ -569,7 +619,8 @@ class Reports(tk.Toplevel):
         self.init_child(self.view)
 
     def is_val_attr(self, attr):
-        """Проверяет, является ли атрибут количественным"""
+        """Проверяет, является ли атрибут количественным
+           Автор - Литвиненко Алексей"""
         val = str(self.dataframe[attr].iloc[0])
         dots = 0
         for ch in val:
@@ -582,7 +633,8 @@ class Reports(tk.Toplevel):
         return True
 
     def init_child(self, view):
-        """Формирует окно"""
+        """Формирует окно
+           Автор - Литвиненко Алексей"""
         self.plot_area_frame = tk.LabelFrame(self, text='Plot Area')
         self.plot_area_frame.place(x=500, y=10, height=500, width=450)
 
@@ -619,7 +671,8 @@ class Reports(tk.Toplevel):
         self.focus_set()
 
     def paint_figure(self):
-        """Отрисовывает фигуру"""
+        """Отрисовывает фигуру
+           Автор - Литвиненко Алексей"""
         self.report_type = "GRAPH"
         canvas = FigureCanvasTkAgg(self.figure, master=self.plot_area_frame)
         canvas.draw()
@@ -627,13 +680,15 @@ class Reports(tk.Toplevel):
         self.to_file = self.figure
 
     def clear(self):
-        """Разрушает фигуру"""
+        """Разрушает фигуру
+           Автор - Литвиненко Алексей"""
         self.figure.clear()
         self.figure = plt.Figure(figsize=(5, 4), dpi=75)
         self.ax = self.figure.add_subplot(111)
 
     def add_combo(self, attrs, text):
-        """Добавляет комбобокс"""
+        """Добавляет комбобокс
+           Автор - Литвиненко Алексей"""
         ys = [73, 116, 159, 202]
         self.combos.append(ttk.Combobox(self.settings_area_frame))
         self.labels.append(tk.Label(self.settings_area_frame, text=text, anchor='w'))
@@ -645,7 +700,8 @@ class Reports(tk.Toplevel):
         self.to_delete.append(self.labels[-1])
 
     def click(self):
-        """Обрабатывает нажатие кнопки выбора типа отчета Автор этого метода - Тарунтаева"""
+        """Обрабатывает нажатие кнопки выбора типа отчета 
+           Автор этого метода - Тарунтаева"""
         for i in self.to_delete:
             i.destroy()
         for i in self.additional_clear:
@@ -698,7 +754,8 @@ class Reports(tk.Toplevel):
         btn2.place(x=250, y=73, width=70)
 
     def build_bar(self, event=None):
-        """Построение столбчатой диаграммы"""
+        """Построение столбчатой диаграммы
+           Автор - Литвиненко Алексей"""
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         vals_prep = {i: set() for i in set(self.dataframe[first_attr].values)}
@@ -716,7 +773,8 @@ class Reports(tk.Toplevel):
         self.paint_figure()
 
     def build_hist(self, event=None):
-        """Построение гистограммы"""
+        """Построение гистограммы
+           Автор - Литвиненко Алексей"""
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         self.clear()
@@ -725,7 +783,8 @@ class Reports(tk.Toplevel):
         self.paint_figure()
 
     def build_box(self, event=None):
-        """Построение диаграммы бокса-вискера"""
+        """Построение диаграммы бокса-вискера
+           Автор - Литвиненко Алексей"""
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         self.clear()
@@ -733,7 +792,8 @@ class Reports(tk.Toplevel):
         self.paint_figure()
 
     def build_scatter(self, event=None):
-        """построение диаграммы рассеивания"""
+        """построение диаграммы рассеивания
+           Автор - Литвиненко Алексей"""
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         third_attr = self.combos[2].get()
@@ -753,7 +813,8 @@ class Reports(tk.Toplevel):
         self.paint_figure()
 
     def build_pivot(self, event=None):
-        """Построение сводной таблицы"""
+        """Построение сводной таблицы
+           Автор - Литвиненко Алексей"""
         for i in self.additional_clear:
             i.destroy()
         self.additional_clear.clear()
@@ -803,7 +864,9 @@ class Reports(tk.Toplevel):
         self.additional_clear.append(self.scrollbar2)
 
     def major_desc_stats(self, atributes1):
-        """Построение таблицы основных описательных статистик"""
+        """Построение таблицы основных описательных статистик
+           Автор - Литвиненко Алексей
+           Вход - список индексов атрибутов"""
         for i in self.additional_clear:
             i.destroy()
         self.additional_clear.clear()
@@ -855,10 +918,6 @@ class SaveReport(tk.Toplevel):
     def __init__(self, to_file, report_type, text_type="NONE"):
         """"""
         super().__init__(root)
-        #        self.plottype1 = plottype
-        #        self.figure1 = figure
-        #        self.text_type1 = text_type
-        #        self.pivot1 = pivot
         self.to_file = to_file
         self.report_type = report_type
         self.text_type = text_type
@@ -890,8 +949,6 @@ class SaveReport(tk.Toplevel):
 
         self.btn_ok = ttk.Button(self, text='Сохранить', command=self.save)
         self.btn_ok.place(x=130, y=160)
-
-        # self.btn_ok.bind('<Button-1>', lambda event: self.save)
 
         self.grab_set()
         self.focus_set()
