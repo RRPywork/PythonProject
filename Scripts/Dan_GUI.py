@@ -515,7 +515,7 @@ class SaveDB(tk.Toplevel):
 
 
 class Reports(tk.Toplevel):
-    """Автор: Литвиненко"""
+    """Авторsы: Литвиненко, Тарутнаева"""
     def __init__(self):
         """"""
         super().__init__(root)
