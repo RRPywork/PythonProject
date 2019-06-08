@@ -564,7 +564,7 @@ class Reports(tk.Toplevel):
         self.combo.place(x=10,y=30, width=200)
 
         self.choose_btn = ttk.Button(self.settings_area_frame, text='Выбрать',command=self.click)
-        self.choose_btn.place(x=230, y=30, width=70)
+        self.choose_btn.place(x=250, y=30, width=70)
 
         self.btn_cancel = ttk.Button(self.settings_area_frame, text='Закрыть', command=self.destroy)
         self.btn_cancel.pack(anchor='se', side='bottom')
@@ -627,7 +627,16 @@ class Reports(tk.Toplevel):
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут для аггрегации")
             self.add_combo(["mean", "sum", "standard deviation"], text="Выберите метод аггрегации")
             btn2.bind("<Button-1>",self.BuildPivot)
-        btn2.place(x=230, y=73, width=70)
+        if self.combo.get()=="Набор осн. опис. стат":
+            self.listbox = tk.Listbox(self.settings_area_frame, selectmode='extended', height=5)
+            [self.listbox.insert('end',i) for i in self.v_attrs]
+            self.label = tk.Label(self.settings_area_frame, text='Выберите атрибуты:')
+            self.label.place(x=10, y=70)
+            self.to_delete.append(self.label)
+            self.listbox.place(x=10, y=95)
+            self.to_delete.append(self.listbox)
+            btn2.bind("<Button-1>",lambda event: self.MajorDescStats(self.listbox.curselection()))
+        btn2.place(x=250, y=73, width=70)
 
 
     def Buildbar(self, event=None):
@@ -737,8 +746,32 @@ class Reports(tk.Toplevel):
 
 
     def MajorDescStats(self, event=None):
-        pass
-                
+        atributes = [self.v_attrs[i] for i in list(atributes1)]
+        self.index = atributes
+        self.DICT = {'Среднее арифметическое':[round(np.mean(self.dataframe[i].values)) for i in atributes],'Мода':[Counter(np.array(self.dataframe[i].values).flat).most_common(1)[0][0] for i in atributes],
+                'Медиана':[np.median(self.dataframe[i].values) for i in atributes],'Стандартное отклонение':[round(np.std(self.dataframe[i].values)) for i in atributes]}
+        self.df = pd.DataFrame(self.DICT,index=self.index)
+        self.scrollbar1 = tk.Scrollbar(self.plot_area_frame, orient=tk.HORIZONTAL)
+        self.scrollbar1.pack(side='bottom', fill='x')
+
+        self.scrollbar2 = tk.Scrollbar(self.plot_area_frame, orient=tk.VERTICAL)
+        self.scrollbar2.pack(side='right', fill='y')
+        self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.df.columns], height=35, 
+                                 xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
+        self.tree.pack(side='right')
+        
+        for i in self.df.columns:
+             self.tree.column(i, anchor=tk.CENTER)
+             
+        for i in self.df.columns:
+            self.tree.heading(i, text=i)
+        self.tree.heading("#0", text="Атрибут")
+        
+        self.scrollbar1.config(command=self.tree.xview)
+        self.scrollbar2.config(command=self.tree.yview)
+        self.to_delete.append(self.tree)
+        self.to_delete.append(self.scrollbar1)
+        self.to_delete.append(self.scrollbar2)             
     def open_save_report(self):
         Save_report(self.to_file, self.report_type, self.text_type)
     
