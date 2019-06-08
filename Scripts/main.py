@@ -617,7 +617,7 @@ class Reports(tk.Toplevel):
         self.to_file = None
         self.report_type = "NONE"
         self.text_type = "NONE"
-        self.init_child(self.view)
+        self.init_child()
 
     def is_val_attr(self, attr):
         """Проверяет, является ли атрибут количественным
