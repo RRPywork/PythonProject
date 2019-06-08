@@ -603,7 +603,7 @@ class Reports(tk.Toplevel):
         self.view = app
         self.title('Проект по питону')
         self.geometry('1000x550')
-        self.resizable(False, False)
+        #self.resizable(False, False)
         self.dataframe = self.view.dp.working_db.get_db()
         self.attributes = list(self.dataframe.keys())
         self.v_attrs = [str(attr) for attr in self.attributes if self.is_val_attr(str(attr))]
