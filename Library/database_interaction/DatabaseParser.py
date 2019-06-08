@@ -18,7 +18,7 @@ class DatabaseParser(DBInterface):
 
     def __init__(self, names, paths, hints=None):
         """
-        Конструктор. Добывает БД из файлов csv (или sql, или ... Смотря что в методе)
+        Конструктор. Добывает БД из файлов csv. Вход - имена справочников, словарь имя справочника:путь к нему, подсказки для слияния
         и помещает их в словарь отношение:БД Автор: Балескин
         """
         assert len(names) == len(paths)
@@ -31,7 +31,10 @@ class DatabaseParser(DBInterface):
         self.working_db = DataBase()
 
     def inclusive_attr_display(self, attr_names):
-        """отобразить все атрибуты из списка в сессионной бд Автор - Балескин"""
+        """
+        отобразить все атрибуты из списка в сессионной бд Автор - Балескин
+        вход - имена атрибутов
+        """
         excl_attr_names = []
         for attrs in self.attr_names.values():
             for attr in attrs:
@@ -40,9 +43,13 @@ class DatabaseParser(DBInterface):
         self.exclusive_attr_display(excl_attr_names)
 
     def inclusive_obj_display(self, obj_names):
+        """Отобразить все объекты из списка на сессионную БД Автор - Балескин
+        вхд - имена объектов"""
         self.working_db = self.working_db.get_objects(obj_names)
 
     def exclusive_attr_display(self, attr_names):
+        """Отобразить все атрибуты кроме указанных в списке Автор - Балескин
+        Вход - имена атрибутов"""
         self.working_db = DataBase()
         for (name, db) in self.its_dbs.items():
             a = self.working_db.join(db, on=self.hints[name] if self.hints[name] != '-' else None, how='left')
@@ -54,10 +61,13 @@ class DatabaseParser(DBInterface):
         self.working_db = DataBase(self.working_db.get_db().groupby(self.working_db.get_db().index).first())
 
     def exclusive_obj_display(self, obj_names):
+        """Отобразить все объекты, кроме указанных Автр - Балескин
+        Вход - список объектов"""
         self.working_db.delete_objects(obj_names)
 
     def parse(self, q_type, *pargs):
         """
+        Автор - Балескин
         Метод, отвечающий за обработку.
         Выполняет выбор типа операции в зависимости от аргументов (в частности, первого) и делегирует частным случаям.
         Первый аргумент - тип запроса

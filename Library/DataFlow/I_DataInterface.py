@@ -1,6 +1,6 @@
 """
 DataFlow
-Author: alesha
+Author: Литвиненко
 """
 from abc import ABC
 from abc import abstractmethod
@@ -10,6 +10,7 @@ class IDataProcessor(ABC):
     """
     Абстрактный класс-интерфейс
     Не требуется
+    Автор - Балескин
     """
 
     @abstractmethod
@@ -17,6 +18,7 @@ class IDataProcessor(ABC):
         """
         Абстрактный метод. Должен быть унаследован потомками.
         Нужен, если, например, надо рассчитать (или обсчитать) какой-нибудь атрибут
+        Автор- Балескин
         """
 
     # @abstractmethod
@@ -24,6 +26,7 @@ class IDataProcessor(ABC):
         """
         :param obj_name: имя исследуемого объекта
         :return:результат исчисления
+        Автор - Балескин
         """
         pass
 
@@ -32,6 +35,7 @@ class EmptyProcessor(IDataProcessor):
     """
     Процессор для замещения пустого условия
     Не требуется
+    Автор - Колесов
     """
 
     def _process(self, *pargs):
@@ -44,6 +48,7 @@ class EmptyProcessor(IDataProcessor):
 class MockDataProcessor(IDataProcessor):
     """
     Класс-наследник - для тестирования архитектуры
+    Автор - Литвиненко
     """
 
     def _process(self, *pargs):

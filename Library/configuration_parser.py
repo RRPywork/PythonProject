@@ -9,24 +9,25 @@ class Block:
     """
 
     def __init__(self, block_name):
-        """"""
+        """Конструктор от имени блока Автор-Балескин"""
         self.name = block_name
         self.items = dict()
 
     def add_item(self, item_name, item_value):
+        """Добавление элемента Автор - Балескин"""
         self.items[item_name] = item_value
 
 
 class ConfigurationParser:
-    """Автор: Балескин"""
+    """Обработчик файла конфигурации Автор: Балескин"""
 
     def __init__(self, path):
-        """"""
+        """Конструктор от пути к файлу Автор-Балескин"""
         self.path = path
         self.blocks = dict()
 
     def parse(self):
-        """"""
+        """Обработка. Возвращает элементы файла Автор Балескин"""
         # print(os.path.dirname(os.path.realpath(__file__)))
         with open(os.path.dirname(os.path.realpath(__file__)) + '\\..\\Scripts\\' + self.path, 'r') as f:
             block_name = ""

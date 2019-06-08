@@ -13,6 +13,6 @@ class DataParserFactory:
     @staticmethod
     def create_mock_data_parser():
         """
-        test method
+        test method Автор - Балескин
         """
         return MockDataParser()

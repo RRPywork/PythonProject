@@ -8,7 +8,7 @@ from abc import abstractmethod
 
 class DBInterface(ABC):
     """
-    Абстрактный класс-интерфейс
+    Абстрактный класс-интерфейс Автор  Балескин
     """
     @abstractmethod
     def parse(self, *pargs):
@@ -17,11 +17,12 @@ class DBInterface(ABC):
 
 class MockDataParser(DBInterface):
     """
-    Класс-наследник, парсер БД
+    Класс-наследник, парсер БД Автор - Балескин
     """
     def parse(self, *pargs):
         """Функция-Наследник"""
         return "SomeString"
         
     def __init__(self):
+        """Конструктор - Автор Балескин"""
         pass
