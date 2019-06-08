@@ -772,7 +772,8 @@ class Reports(tk.Toplevel):
         self.scrollbar2.config(command=self.tree.yview)
         self.to_delete.append(self.tree)
         self.to_delete.append(self.scrollbar1)
-        self.to_delete.append(self.scrollbar2)             
+        self.to_delete.append(self.scrollbar2) 
+        [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.df.index.tolist(), self.df.values.tolist())]
     def open_save_report(self):
         Save_report(self.to_file, self.report_type, self.text_type)
     
