@@ -745,7 +745,7 @@ class Reports(tk.Toplevel):
                 self.pivot.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, sheet_name="pivot_table")
 
 
-    def MajorDescStats(self, event=None):
+    def MajorDescStats(self, atributes1):
         atributes = [self.v_attrs[i] for i in list(atributes1)]
         self.index = atributes
         self.DICT = {'Среднее арифметическое':[round(np.mean(self.dataframe[i].values)) for i in atributes],'Мода':[Counter(np.array(self.dataframe[i].values).flat).most_common(1)[0][0] for i in atributes],
