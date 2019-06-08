@@ -186,7 +186,7 @@ class Main(tk.Frame):
 
 
 class DownloadSession(tk.Toplevel):
-    """Загрузка сессии из файла Авторы - Тарунтаева, Литвиненко"""
+    """Загрузка сессии из файла Авторы - Тарунтаева"""
     def __init__(self):
         """Автор этого метода - Колесов"""
         super().__init__(root)
@@ -220,7 +220,7 @@ class DownloadSession(tk.Toplevel):
 
 
 class DeleteAtribute(tk.Toplevel):
-    """Удаление атрибута Авторы - Тарунтаева, Литвиненко"""
+    """Удаление атрибута Автор - Тарунтаева"""
     def __init__(self):
         """Автор этого метода - Колесов"""
         super().__init__(root)
@@ -515,9 +515,9 @@ class SaveDB(tk.Toplevel):
 
 
 class Reports(tk.Toplevel):
-    """Авторsы: Литвиненко, Тарутнаева"""
+    """Автор: Литвиненко"""
     def __init__(self):
-        """"""
+        """Автор этого метода - Тарунтаева"""
         super().__init__(root)
         self.view = app
         self.state('zoomed')
@@ -615,7 +615,7 @@ class Reports(tk.Toplevel):
         self.to_delete.append(self.labels[-1])
 
     def click(self):
-        """Обрабатывает нажатие кнопки выбора типа отчета"""
+        """Обрабатывает нажатие кнопки выбора типа отчета Автор этого метода - Тарунтаева"""
         for i in self.to_delete:
             i.destroy()
         for i in self.additional_clear:
