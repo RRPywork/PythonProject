@@ -930,7 +930,7 @@ class SaveReport(tk.Toplevel):
     Автор: Балескин
     """
     def __init__(self, to_file, report_type, text_type="NONE"):
-        """Конструктор класса
+        """Конструктор класса. На вход подаются отчет, его тип и тип текста, при необходимости
            Автор - Балескин Виталий"""
         super().__init__(root)
         self.to_file = to_file
@@ -972,7 +972,7 @@ class SaveReport(tk.Toplevel):
 
     def save(self, event=None):
         """сохранение
-           Автор - Балескин Виталий"""
+           Автор - Балескин Виталий Входа, как такового, нет"""
         self.filename = self.entry.get()
         self.extension = self.combobox.get()
         if self.report_type == 'GRAPH':
