@@ -1,5 +1,5 @@
 """
-The world's fake
+Ложные тесты Автор - Балескин
 """
 from Library.GUI.I_Data import MockDataAggregator
 
@@ -7,9 +7,9 @@ import unittest
 
 
 class Test(unittest.TestCase):
-    """FAKEEEE"""
+    """Ложный пакет тестов Автор - Балескин"""
     def testDataInterface(self):
-        """Liiies"""
+        """Ложный тест Автор - Балескин"""
         m = MockDataAggregator()
         self.assertEqual(m.get_data(), "SomeString Been in processing. Been in Aggregator.", "SmthHappened?")
 

@@ -12,14 +12,14 @@ class Test(unittest.TestCase):
     """
 
     def test_appending_objects(self):
-        """"""
+        """Тест добавления объектов Автор - Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         # print(db.get_db())
         assert True
 
     def test_append_attributes(self):
-        """"""
+        """Тет добавления атрибутов. Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_object_deletion(self):
-        """"""
+        """Тест удаления объектов Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_attribute_deletion(self):
-        """"""
+        """Тест удаления атрибутов Автор - Литвиненко"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -48,7 +48,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_get_objects(self):
-        """"""
+        """Тест получения объектов Автор - Тарунтаева"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_get_attribute(self):
-        """"""
+        """Тест получения атрибута Автор - Литвиненко"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -69,7 +69,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_get_part(self):
-        """"""
+        """Тест получения части Автор Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -80,7 +80,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_exclusive(self):
-        """"""
+        """Тест получения <<всего кроме>> для атрибутов и объектов по отдельности Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -93,7 +93,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_store(self):
-        """"""
+        """Тест сохранения. Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -103,14 +103,14 @@ class Test(unittest.TestCase):
         assert True
 
     def test_read(self):
-        """"""
+        """Тест чтения Автор - Тарунтаева"""
         db = DataBase()
         db.read("test_data")
         # print(db.get_db())
         assert True
 
     def test_get_part_exclusive(self):
-        """"""
+        """Тест получения части Автор - Литвиненко"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -121,7 +121,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_init_from_db(self):
-        """"""
+        """Тест инициации БД при помощи БД Автор - Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -131,7 +131,7 @@ class Test(unittest.TestCase):
         # print(a.get_db())
 
     def test_get_db(self):
-        """"""
+        """Тест получения подлежащего DataFrame Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -141,7 +141,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_get_value(self):
-        """"""
+        """Тест получения значения Автор Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -151,7 +151,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_change_value(self):
-        """"""
+        """Тест изменения значения Автор - Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -163,7 +163,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_rename(self):
-        """"""
+        """Тест переименования Автор -Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -175,7 +175,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_get_attr_names(self):
-        """"""
+        """Тест получения имен атрибутов Автор - Литвиненко"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -185,7 +185,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_append_attributes_2(self):
-        """"""
+        """Тест добавления атрибутов №2 Автор - Колесов"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -200,7 +200,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_join(self):
-        """"""
+        """Тест слияния Автор - Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
@@ -215,7 +215,7 @@ class Test(unittest.TestCase):
         assert True
 
     def test_parser(self):
-        """"""
+        """Тест обработчика запросов Автор - Балескин"""
         db = DataBase()
         db.append_object("Evergreen", ["Name"], ["Mary Sue"])
         db.append_object("NotEvergreen", ["Name"], ["Robert Katz"])
