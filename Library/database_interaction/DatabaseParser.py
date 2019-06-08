@@ -19,7 +19,7 @@ class DatabaseParser(DBInterface):
     def __init__(self, names, paths, hints=None):
         """
         Конструктор. Добывает БД из файлов csv (или sql, или ... Смотря что в методе)
-        и помещает их в словарь отношение:БД
+        и помещает их в словарь отношение:БД Автор: Балескин
         """
         assert len(names) == len(paths)
         self.its_dbs = {i: DataBase() for i in names}
@@ -31,6 +31,7 @@ class DatabaseParser(DBInterface):
         self.working_db = DataBase()
 
     def inclusive_attr_display(self, attr_names):
+        """отобразить все атрибуты из списка в сессионной бд Автор - Балескин"""
         excl_attr_names = []
         for attrs in self.attr_names.values():
             for attr in attrs:

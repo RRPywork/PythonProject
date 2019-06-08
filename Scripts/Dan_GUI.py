@@ -109,16 +109,19 @@ class Main(tk.Frame):
                              dp.working_db.get_db().values.tolist())]
 
     def add_object(self, key_entry, entries):
+        """"""
         dp.parse("APPEND", [], [key_entry.get()], [{i: j for i, j in
                                                     zip(dp.working_db.get_db().columns, [k.get() for k in entries])}],
                  None)
         self.update_db()
 
     def add_atribute(self, entry, combobox):
+        """"""
         dp.parse("APPEND", [entry.get()], [], [], None)
         self.update_db()
 
     def delete_object(self):
+        """"""
         if self.tree.selection() == ():
             mb.showerror('Ошибка', 'Должны быть выбраны объекты')
         else:
@@ -127,16 +130,19 @@ class Main(tk.Frame):
             self.update_db()
 
     def delete_atribute(self, entries):
+        """"""
         dp.parse("DELETE", [dp.working_db.get_db().columns[i] for i in entries], [])
         self.update_db()
 
     def edit_object(self, entries):
+        """"""
         for i, j in zip(dp.working_db.get_db().columns, entries):
             dp.parse("CHANGE", i, self.tree.item(self.tree.selection()[0])['text'], str(j.get()))
         self.tree.focus_set()
         self.update_db()
 
     def select_all(self, variables):
+        """"""
         for i in variables:
             if i.get() is False:
                 [j.set(True) for j in variables]
@@ -144,44 +150,56 @@ class Main(tk.Frame):
                 [j.set(False) for j in variables]
 
     def edit_atribute(self, combobox, entry):
+        """"""
         dp.parse("RENAME", {combobox.get(): entry.get()}, "columns")
         self.update_db()
 
     def view_records(self, variables, atributes):
+        """"""
         dp.parse("DISPLAY", ["-i"] + [i for i, j in zip(atributes, variables) if j.get()], [None, None], None)
         self.update_db()
 
     def save_db(self, entry):
+        """"""
         dp.parse("STORE", entry.get())
 
     def open_download_session(self):
+        """"""
         DownloadSession()
 
     def open_info(self):
+        """"""
         pass
 
     def open_add_object(self):
+        """"""
         AddObject(atributes)
 
     def open_add_atribute(self):
+        """"""
         AddAtribute()
 
     def open_delete_dialog(self):
+        """"""
         DeleteAtribute()
 
     def open_edit_object(self):
+        """"""
         if self.tree.selection() == ():
             mb.showerror('Ошибка', 'Должен быть выбран объект')
         else:
             EditObject()
 
     def open_edit_atribute(self):
+        """"""
         EditAtribute()
 
     def open_show_db(self):
+        """"""
         ShowDB(atributes)
 
     def open_save_db(self):
+        """"""
         SaveDB()
 
 
@@ -194,6 +212,7 @@ class DownloadSession(tk.Toplevel):
         self.view = app
 
     def init_child(self):
+        """"""
         self.title('Загрузка сессии')
         self.geometry('300x150+400+300')
         self.resizable(False, False)
@@ -228,6 +247,7 @@ class DeleteAtribute(tk.Toplevel):
         self.view = app
 
     def init_child(self):
+        """"""
         self.title('Удалить атрибуты')
         self.geometry('200x300+400+300')
         self.resizable(False, False)
@@ -262,6 +282,7 @@ class AddObject(tk.Toplevel):
         self.view = app
 
     def init_child(self, atributes):
+        """"""
         self.title('Добавить новый объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
@@ -310,11 +331,13 @@ class AddObject(tk.Toplevel):
 class AddAtribute(tk.Toplevel):
     """Добавление атрибута Автор - Балескин"""
     def __init__(self):
+        """"""
         super().__init__(root)
         self.init_child(atributes)
         self.view = app
 
     def init_child(self, atributes):
+        """"""
         self.title('Добавить новый атрибут')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -346,11 +369,13 @@ class AddAtribute(tk.Toplevel):
 class EditAtribute(tk.Toplevel):
     """Окно изменения атрибута"""
     def __init__(self):
+        """"""
         super().__init__(root)
         self.init_child()
         self.view = app
 
     def init_child(self):
+        """"""
         self.title('Редактировать атрибут')
         self.geometry('300x200+400+300')
         self.resizable(False, False)
@@ -382,11 +407,13 @@ class EditAtribute(tk.Toplevel):
 class EditObject(tk.Toplevel):
     """Окно изменения объекта"""
     def __init__(self):
+        """"""
         super().__init__(root)
         self.view = app
         self.init_child(self.view)
 
     def init_child(self, view):
+        """"""
         self.title('Редактировать объект')
         self.geometry('350x300+400+300')
         self.resizable(False, False)
@@ -434,11 +461,13 @@ class EditObject(tk.Toplevel):
 class ShowDB(tk.Toplevel):
     """Отображение и обновление БД"""
     def __init__(self, atributes):
+        """"""
         super().__init__(root)
         self.init_child(atributes)
         self.view = app
 
     def init_child(self, atributes):
+        """"""
         self.title('Отобразить')
         self.geometry('200x300+400+300')
         self.resizable(False, False)
@@ -489,6 +518,7 @@ class SaveDB(tk.Toplevel):
         self.view = app
 
     def init_child(self):
+        """"""
         self.title('Сохранение базы данных')
         self.geometry('300x150+400+300')
         self.resizable(False, False)
