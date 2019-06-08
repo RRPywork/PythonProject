@@ -19,6 +19,7 @@ from tkinter import BooleanVar
 from tkinter import StringVar
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import Counter
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Work.Library.DataBase import DataBase
 from Work.Library.database_interaction.DatabaseParser import DatabaseParser
