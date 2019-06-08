@@ -515,6 +515,7 @@ class Reports(tk.Toplevel):
         self.figure=plt.Figure(figsize=(5,4),dpi=75)
         self.ax= self.figure.add_subplot(111)
         self.to_delete=[]
+        self.additional_clear=[]
         self.combos = []
         self.labels=[]
         self.to_file = None
@@ -600,7 +601,10 @@ class Reports(tk.Toplevel):
     def click(self):
         for i in self.to_delete:
             i.destroy()
+        for i in self.additional_clear:
+            i.destroy()
         self.to_delete.clear()
+        self.additional_clear.clear()
         self.combos.clear()
         self.clear()
         btn2 = ttk.Button(self.settings_area_frame, text='Построить')
@@ -652,6 +656,9 @@ class Reports(tk.Toplevel):
         d = pd.DataFrame({first_attr:indices, second_attr:list(vals.values())})
         d.plot.bar(ax=self.ax,x=first_attr, y=second_attr)
         #add label, saying "Измеряется количество разных значений второго атрибута"
+        self.lblLegend = tk.Label(self, text="Измеряется количество\nразных значений второго атрибута")
+        self.lblLegend.place(x=1000,y=10, height=60, width=200)
+        self.to_delete.append(self.lblLegend)
         self.paint_figure()
 
     def Buildhist(self, event=None):
@@ -688,6 +695,9 @@ class Reports(tk.Toplevel):
         self.paint_figure()
 
     def BuildPivot(self, event=None):
+        for i in self.additional_clear:
+            i.destroy()
+        self.additional_clear.clear()
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         third_attr = self.combos[2].get()
@@ -727,26 +737,15 @@ class Reports(tk.Toplevel):
              self.tree.heading(i, text=i)
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.pivot.index.tolist(), self.pivot.values.tolist())]
-        self.to_delete.append(self.tree)
-        
-    def save_report(self, entry, combobox):
-#        Создать окно, в котором можно выбрать имя файла и формат, произвести сохранение
-#        Конструктор принимает сохраняемый объект, его тип - графический или текстовый, и сохраняет в файл.
-#        Формат граф. файла определяет пользователь. Для текстовых отчетов: набор осн.опис.стат - .txt; сводная таблица - .xslx
-        name = entry.get()+combobox.get().lower()#change to choice result
-        if self.report_type== "GRAPH":
-            f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name, 'w')
-            f.close()
-            self.figure.savefig(fname=os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ name)
-        elif self.report_type== "TEXT":
-            if self.text_type == "PIVOT":
-                name = "text1.xlsx"
-                f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, 'w')
-                f.close()
-                self.pivot.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ name, sheet_name="pivot_table")
+        self.additional_clear.append(self.tree)
+        self.additional_clear.append(self.scrollbar1)
+        self.additional_clear.append(self.scrollbar2)
 
 
     def MajorDescStats(self, atributes1):
+        for i in self.additional_clear:
+            i.destroy()
+        self.additional_clear.clear()
         atributes = [self.v_attrs[i] for i in list(atributes1)]
         self.index = atributes
         self.DICT = {'Среднее арифметическое':[round(np.mean(self.dataframe[i].values)) for i in atributes],'Мода':[Counter(np.array(self.dataframe[i].values).flat).most_common(1)[0][0] for i in atributes],
@@ -757,6 +756,7 @@ class Reports(tk.Toplevel):
 
         self.scrollbar2 = tk.Scrollbar(self.plot_area_frame, orient=tk.VERTICAL)
         self.scrollbar2.pack(side='right', fill='y')
+
         self.tree = ttk.Treeview(self.plot_area_frame, columns=[i for i in self.df.columns], height=35, 
                                  xscrollcommand=self.scrollbar1.set, yscrollcommand=self.scrollbar2.set)
         self.tree.pack(side='right')
@@ -770,10 +770,14 @@ class Reports(tk.Toplevel):
         
         self.scrollbar1.config(command=self.tree.xview)
         self.scrollbar2.config(command=self.tree.yview)
-        self.to_delete.append(self.tree)
-        self.to_delete.append(self.scrollbar1)
-        self.to_delete.append(self.scrollbar2) 
+        self.additional_clear.append(self.tree)
+        self.additional_clear.append(self.scrollbar1)
+        self.additional_clear.append(self.scrollbar2)
         [self.tree.insert('', 'end', values=row_data[1], text=row_data[0]) for row_data in zip(self.df.index.tolist(), self.df.values.tolist())]
+        self.text_type="MDS"
+        self.report_type="TEXT"
+        self.to_file = self.df
+
     def open_save_report(self):
         Save_report(self.to_file, self.report_type, self.text_type)
     
@@ -806,10 +810,7 @@ class Save_report(tk.Toplevel):
         if self.report_type=='GRAPH' :
             self.combobox = ttk.Combobox(self, values=['PDF','PNG','JPEG'])
         elif self.report_type=='TEXT':
-            if self.text_type=='PIVOT':
                 self.combobox = ttk.Combobox(self, values=['xlsx'])
-            elif self.text_type=='MDS':
-                self.combobox = ttk.Combobox(self, values=['txt'])
         self.combobox.pack(side='top', pady=7)
         
         
@@ -833,10 +834,14 @@ class Save_report(tk.Toplevel):
             f.close()
             self.to_file.savefig(fname=os.path.dirname(os.path.realpath(__file__))+ "\\..\\Graphics\\"+ self.filename + '.' + self.extension)
         elif(self.report_type=='TEXT'):
+            sheet_name = ''
             if self.text_type=='PIVOT':
-                f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, 'w')
-                f.close()
-                self.to_file.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, sheet_name="pivot_table")
+                sheet_name = 'pivot_table'
+            else:
+                sheet_name = 'main_statistics'
+            f = open(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, 'w')
+            f.close()
+            self.to_file.to_excel(os.path.dirname(os.path.realpath(__file__))+ "\\..\\Output\\"+ self.filename + '.' + self.extension, sheet_name=sheet_name)
         self.destroy()
 
 
