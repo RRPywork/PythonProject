@@ -715,26 +715,31 @@ class Reports(tk.Toplevel):
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
-            btn2.bind("<Button-1>", self.build_scatter)
+            if len(self.v_attrs)>0 and len(self.q_attrs)>0:
+                btn2.bind("<Button-1>", self.build_scatter)
 
         if self.combo.get() == "Столбчатая диаграмма(кач-кач)":
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
-            btn2.bind("<Button-1>", self.build_bar)
+            if len(self.q_attrs)>1:
+                btn2.bind("<Button-1>", self.build_bar)
         if self.combo.get() == "Гистограмма(кол-кач)":
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
-            btn2.bind("<Button-1>", self.build_hist)
+            if len(self.v_attrs)>0 and len(self.q_attrs)>0:
+                btn2.bind("<Button-1>", self.build_hist)
         if self.combo.get() == "Диаграмма Бокса-Вискера(кол-кач)":
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут")
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
-            btn2.bind("<Button-1>", self.build_box)
+            if len(self.v_attrs)>0 and len(self.q_attrs)>0:
+                btn2.bind("<Button-1>", self.build_box)
         if self.combo.get() == "Сводная таблица (кач-кач)":
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
             self.add_combo(self.q_attrs, text="Выберите качественный атрибут")
             self.add_combo(self.v_attrs, text="Выберите количественный атрибут для аггрегации")
             self.add_combo(["mean", "sum", "standard deviation"], text="Выберите метод аггрегации")
-            btn2.bind("<Button-1>", self.build_pivot)
+            if len(self.v_attrs)>0 and len(self.q_attrs)>1:
+                btn2.bind("<Button-1>", self.build_pivot)
         if self.combo.get() == "Набор осн. опис. стат":
             self.frame = tk.Frame(self.settings_area_frame)
             self.frame.place(x=10, y=70)
@@ -750,14 +755,18 @@ class Reports(tk.Toplevel):
             self.to_delete.append(self.label)
             self.listbox.pack(anchor='nw')
             self.to_delete.append(self.listbox)
-            btn2.bind("<Button-1>", lambda event: self.major_desc_stats(self.listbox.curselection()))
+            if len(self.v_attrs)>0:
+                btn2.bind("<Button-1>", lambda event: self.major_desc_stats(self.listbox.curselection()))
         btn2.place(x=250, y=73, width=70)
+        self.to_delete.append(btn2)
 
     def build_bar(self, event=None):
         """Построение столбчатой диаграммы
            Автор - Литвиненко Алексей"""
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
+        if first_attr == second_attr:
+            return
         vals_prep = {i: set() for i in set(self.dataframe[first_attr].values)}
         for i in self.dataframe[[first_attr, second_attr]].values:
             vals_prep[i[0]].add(i[1])
@@ -822,6 +831,8 @@ class Reports(tk.Toplevel):
         second_attr = self.combos[1].get()
         third_attr = self.combos[2].get()
         agg_method = self.combos[3].get()
+        if first_attr==second_attr:
+            return
         agg_func = None
         if agg_method == "mean":
             agg_func = np.mean
@@ -871,6 +882,8 @@ class Reports(tk.Toplevel):
             i.destroy()
         self.additional_clear.clear()
         atributes = [self.v_attrs[i] for i in list(atributes1)]
+        if len(atributes)==0:
+            return
         self.index = atributes
         self.data = {'Среднее арифметическое': [round(np.mean(self.dataframe[i].values)) for i in atributes],
                      'Мода': [Counter(np.array(self.dataframe[i].values).flat).most_common(1)[0][0] for i in atributes],
@@ -938,6 +951,7 @@ class SaveReport(tk.Toplevel):
 
         self.label_name1 = tk.Label(self, text='Выберите расширение:')
         self.label_name1.pack(side='top', pady=7)
+        self.combobox = ttk.Combobox(self, values=['PDF', 'PNG', 'JPEG'])
         if self.report_type == 'GRAPH':
             self.combobox = ttk.Combobox(self, values=['PDF', 'PNG', 'JPEG'])
         elif self.report_type == 'TEXT':
