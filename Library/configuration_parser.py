@@ -1,20 +1,25 @@
-""""""
+"""Автор: Балескин"""
 import os
 
+
 class Block:
-    """"""
+    """
+    Хранит один блок файла ini
+    Автор: Балескин
+    """
+
     def __init__(self, block_name):
         """"""
         self.name = block_name
         self.items = dict()
 
     def add_item(self, item_name, item_value):
-        self.items[item_name]=item_value
-
+        self.items[item_name] = item_value
 
 
 class ConfigurationParser:
-    """"""
+    """Автор: Балескин"""
+
     def __init__(self, path):
         """"""
         self.path = path
@@ -22,16 +27,16 @@ class ConfigurationParser:
 
     def parse(self):
         """"""
-        #print(os.path.dirname(os.path.realpath(__file__)))
-        with open(os.path.dirname(os.path.realpath(__file__))+'\\..\\Scripts\\'+self.path, 'r') as f:
+        # print(os.path.dirname(os.path.realpath(__file__)))
+        with open(os.path.dirname(os.path.realpath(__file__)) + '\\..\\Scripts\\' + self.path, 'r') as f:
             block_name = ""
-            strs=f.readlines()
+            strs = f.readlines()
             for line in strs:
-                if line[0]=='[':
+                if line[0] == '[':
                     block_name = line[1:-2]
-                    self.blocks[block_name]=Block(block_name)
-                elif line!="":
+                    self.blocks[block_name] = Block(block_name)
+                elif line != "":
                     name, val = line.split('=')
-                    val = val[:-1] if val[-1]=='\n' else val
+                    val = val[:-1] if val[-1] == '\n' else val
                     self.blocks[block_name].add_item(name, val)
         return self.blocks

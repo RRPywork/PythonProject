@@ -1,5 +1,6 @@
 """
 Попытка создать БД
+Автор: Балескин
 """
 import os
 from pandas import DataFrame
@@ -9,8 +10,10 @@ from pandas import read_csv
 
 class DataBase:
     """
-    Класс с БД - это лучший класс
+    Автор: Балескин
+    Содержит pandas.DataFrame и замещает его, с целью инкапсуляции лишнего функционала там, где он не нужен
     """
+
     def __init__(self, db=None, name=None):
         """"""
         if db is None:
@@ -92,7 +95,7 @@ class DataBase:
             return self.get_objects(keys)
         if keys is None:
             return self.get_attributes(attr_names)
-        k = self.db[attr_names].loc[keys,:]
+        k = self.db[attr_names].loc[keys, :]
         return DataBase(k)
 
     def get_part_exclusive(self, keys, attr_names):
@@ -117,18 +120,17 @@ class DataBase:
 
     def store(self, filename):
         """"""
-        path = os.path.dirname(os.path.realpath(__file__))+'\\..\\Data\\'
+        path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\Data\\'
         self.db.to_csv(path + filename + '.csv', index=True)
 
     def read(self, filename):
         """"""
         from pathlib import Path
-        path = os.path.dirname(os.path.realpath(__file__))+'\\..\\Data\\'
+        path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\Data\\'
         path += filename + '.csv'
         file = Path(path)
         if not file.is_file():
             raise RuntimeError("Not a file")
         self.db = read_csv(path, index_col=0)
 
-
-        #print(self.db)
+        # print(self.db)

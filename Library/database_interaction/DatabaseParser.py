@@ -4,6 +4,7 @@
 Вполне возможно (и так действительно может получиться!), обработчики и GUI будут частично зависеть от Pandas,
 (используем Pandas как обертку для MatPlotLib) но потоку не должно быть никакого дела до передаваемых по нему объектов.
 Author: Vitaly(Admin)
+Автор: Балескин
 """
 from Work.Library.DataBase import DataBase
 from Work.Library.DataFlow.DBInterface import DBInterface
@@ -11,20 +12,22 @@ from Work.Library.DataFlow.DBInterface import DBInterface
 
 class DatabaseParser(DBInterface):
     """
-    Обработчик
+    Обработчик БД, множества БД, сессионной БД и запросов к оным
+    Автор: Балескин
     """
+
     def __init__(self, names, paths, hints=None):
         """
         Конструктор. Добывает БД из файлов csv (или sql, или ... Смотря что в методе)
         и помещает их в словарь отношение:БД
         """
         assert len(names) == len(paths)
-        self.its_dbs = {i:DataBase() for i in names}
+        self.its_dbs = {i: DataBase() for i in names}
         if hints is not None:
-            self.hints = {i:hints[i] for i in names}
+            self.hints = {i: hints[i] for i in names}
         for i in names:
             self.its_dbs[i].read(paths[i])
-        self.attr_names = {names[i]:self.its_dbs[names[i]].get_attr_names() for i in range(len(names))}
+        self.attr_names = {names[i]: self.its_dbs[names[i]].get_attr_names() for i in range(len(names))}
         self.working_db = DataBase()
 
     def inclusive_attr_display(self, attr_names):
@@ -41,7 +44,7 @@ class DatabaseParser(DBInterface):
     def exclusive_attr_display(self, attr_names):
         self.working_db = DataBase()
         for (name, db) in self.its_dbs.items():
-            a = self.working_db.join(db, on=self.hints[name] if self.hints[name]!='-' else None, how='left')
+            a = self.working_db.join(db, on=self.hints[name] if self.hints[name] != '-' else None, how='left')
             self.working_db = a
         if attr_names is not None:
             for attr in attr_names:
@@ -84,17 +87,17 @@ class DatabaseParser(DBInterface):
             conditions = pargs[2]
             if self.working_db.empty():
                 self.working_db = DataBase(name='DATA')
-            if(attr_key is not None):
+            if attr_key is not None:
                 if attr_key == '-i':
                     self.inclusive_attr_display(attr_names)
                 elif attr_key == '-e':
                     self.exclusive_attr_display(attr_names)
-            if(obj_key is not None):
+            if obj_key is not None:
                 if obj_key == '-i':
                     self.inclusive_obj_display(obj_names)
                 elif obj_key == '-e':
                     self.exclusive_obj_display(obj_names)
-            if(conditions is not None):
+            if conditions is not None:
                 for cond in conditions:
                     cond._process(self.working_db)
 
@@ -103,18 +106,18 @@ class DatabaseParser(DBInterface):
             path_names = pargs[1]
             hints = pargs[2]
             for (name, hint) in hints.items():
-                self.hints[name]=hint
+                self.hints[name] = hint
             for i in range(len(names)):
                 db = DataBase()
                 db.read(path_names[i])
                 self.its_dbs[names[i]] = db
-            self.attr_names = {i:self.its_dbs[i].get_attr_names() for i in self.its_dbs.keys()}
+            self.attr_names = {i: self.its_dbs[i].get_attr_names() for i in self.its_dbs.keys()}
 
         elif q_type == 'DROP':
             names = pargs[0]
             for name in names:
                 del self.its_dbs[name]
-            self.attr_names = {i:self.its_dbs[i].get_attr_names() for i in self.its_dbs.keys()}
+            self.attr_names = {i: self.its_dbs[i].get_attr_names() for i in self.its_dbs.keys()}
         elif q_type == 'APPEND':
             attr_names = pargs[0]
             obj_names = pargs[1]
@@ -123,7 +126,7 @@ class DatabaseParser(DBInterface):
             if name is not None:
                 self.working_db.join(self.its_dbs[name].get_attributes(attr_names), on=None, how='inner')
             else:
-                global_failure=False
+                global_failure = False
                 for attr in attr_names:
                     failure = True
                     for n, attrs in self.attr_names.items():
@@ -134,7 +137,6 @@ class DatabaseParser(DBInterface):
                     if failure:
                         self.working_db.append_attribute(attr, [None for i in self.working_db.get_db().values])
                         global_failure = True
-
 
             objects = dict(zip(obj_names, obj_values))
             for o_name, values in objects.items():
@@ -161,5 +163,3 @@ class DatabaseParser(DBInterface):
         elif q_type == 'LOAD':
             self.working_db.read(pargs[0])
         pass
-
-
