@@ -602,7 +602,7 @@ class Reports(tk.Toplevel):
         super().__init__(root)
         self.view = app
         self.title('Проект по питону')
-        self.geometry('1000x550')
+        self.geometry('1200x550')
         #self.resizable(False, False)
         self.dataframe = self.view.dp.working_db.get_db()
         self.attributes = list(self.dataframe.keys())
@@ -797,7 +797,7 @@ class Reports(tk.Toplevel):
         first_attr = self.combos[0].get()
         second_attr = self.combos[1].get()
         self.clear()
-        self.dataframe.boxplot(ax=self.ax, by=second_attr, column=first_attr)
+        self.dataframe.boxplot(ax=self.ax, by=second_attr, column=first_attr, rot=90)
         self.paint_figure()
 
     def build_scatter(self, event=None):
